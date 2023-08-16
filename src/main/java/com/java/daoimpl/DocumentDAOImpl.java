@@ -1,0 +1,81 @@
+package com.java.daoimpl;
+
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.java.dao.DocumentDAO;
+import com.java.entities.DocumentBlob;
+import com.java.entities.DocumentStr;
+import com.java.jdbcconn.JdbcApp;
+
+public class DocumentDAOImpl implements DocumentDAO {
+
+	JdbcApp jdbc = new JdbcApp();
+	Connection connection = jdbc.getConnection();
+	PreparedStatement ps = jdbc.getPs();
+
+	@Override
+	public boolean addDocument(DocumentStr document) {
+		try {
+			ps = connection
+					.prepareStatement("insert into document(document_id,application_number,aadhar,pan,timestamp) "
+							+ "values(?,?,?,?,CURRENT_TIMESTAMP)");
+			Blob aadharBlob = connection.createBlob();
+			aadharBlob.setBytes(1, document.getAadhar().getBytes());
+
+			Blob panBlob = connection.createBlob();
+			aadharBlob.setBytes(1, document.getPan().getBytes());
+
+			ps.setString(1, document.getDocument_id());
+			ps.setString(2, document.getApplication_number());
+			ps.setBlob(3, aadharBlob);
+			ps.setBlob(4, panBlob);
+			int res = ps.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public DocumentStr getAllDocuments() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean updateDocument(String documentId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteDocument(String documentId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public DocumentBlob getDocumentById(String applicationId) {
+		try {
+			ps = connection.prepareStatement(
+					"select document_id,application_number,aadhar,pan,timestamp from document where application_number=?");
+			ps.setString(1, applicationId);
+			ResultSet res = ps.executeQuery();
+			while (res.next()) {
+				return new DocumentBlob(res.getString(1), res.getString(2), res.getBlob(3), res.getBlob(4),
+						res.getTimestamp(5));
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+}

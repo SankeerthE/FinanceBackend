@@ -30,7 +30,7 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 		} catch (SQLException e) {
 			throw e;
 		}
-		return null;
+		return loanApplications;
 	}
 
 	@Override
@@ -70,7 +70,8 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 
 	@Override
 	public LoanApplication getLoanApplicationById(String applicationId) {
-		// TODO Auto-generated method stub
+		
+//		ps=connection.prepareStatement("");
 		return null;
 	}
 
