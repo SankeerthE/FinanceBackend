@@ -7,6 +7,8 @@ import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateLoanDTO;
 import com.java.requestdto.DocumentDTO;
+import com.java.requestdto.ProfileReqDTO;
+import com.java.responsedto.ProfileDTO;
 import com.java.responseentity.Response;
 
 import jakarta.ws.rs.GET;
@@ -57,4 +59,18 @@ public class CustomerController {
 			return new Response<DocumentStr>("document not retrived", 400, null);
 		}
 	}
+	
+	@GET
+	@Path("/getMyProfile")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response<ProfileDTO> getMyProfile(ProfileReqDTO profileReqDTO, @HeaderParam("customerId") String customerId){
+		ProfileDTO profileDTO = customerServiceImpl.getMyProfile(customerId, profileReqDTO.getAccountNumber());
+		if(profileDTO!=null) {
+			return new Response<ProfileDTO>("profile retrived",200,profileDTO);
+		}
+		else {
+			return new Response<ProfileDTO>("profile not retrived",400,null);
+		}
+	}
+
 }

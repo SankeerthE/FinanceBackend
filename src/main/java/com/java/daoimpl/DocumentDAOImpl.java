@@ -18,7 +18,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public boolean addDocument(DocumentStr document) {
+	public boolean addDocument(DocumentStr document) throws SQLException {
 		try {
 			ps = connection
 					.prepareStatement("insert into document(document_id,application_number,aadhar,pan,timestamp) "
@@ -27,7 +27,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 			aadharBlob.setBytes(1, document.getAadhar().getBytes());
 
 			Blob panBlob = connection.createBlob();
-			aadharBlob.setBytes(1, document.getPan().getBytes());
+			panBlob.setBytes(1, document.getPan().getBytes());
 
 			ps.setString(1, document.getDocument_id());
 			ps.setString(2, document.getApplication_number());
@@ -36,9 +36,10 @@ public class DocumentDAOImpl implements DocumentDAO {
 			int res = ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			
+			throw e;
 		}
-		return false;
+		return true;
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 	}
 
 	@Override
-	public DocumentBlob getDocumentById(String applicationId) {
+	public DocumentBlob getDocumentById(String applicationId) throws SQLException {
 		try {
 			ps = connection.prepareStatement(
 					"select document_id,application_number,aadhar,pan,timestamp from document where application_number=?");
@@ -70,10 +71,9 @@ public class DocumentDAOImpl implements DocumentDAO {
 				return new DocumentBlob(res.getString(1), res.getString(2), res.getBlob(3), res.getBlob(4),
 						res.getTimestamp(5));
 			}
-			
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 		return null;
 	}
