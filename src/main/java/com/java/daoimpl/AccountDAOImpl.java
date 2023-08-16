@@ -16,7 +16,7 @@ public class AccountDAOImpl implements AccountDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public boolean createAccount(Account account) {
+	public boolean createAccount(Account account) throws SQLException {
 		try {
 			ps = connection.prepareStatement(
 					"insert into account(account_number,cust_id,balance,timestamp) values(?,?,?,CURRENT_TIMESTAMP)");
@@ -25,14 +25,13 @@ public class AccountDAOImpl implements AccountDAO {
 			ps.setDouble(3, account.getBalance());
 			int res = ps.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 		return true;
 	}
 
 	@Override
-	public boolean updateAccount(String accountNumber) {
+	public boolean updateAccount(String accountNumber) throws SQLException {
 
 		try {
 			ps = connection.prepareStatement("update account set balance=? where account_number=?");
@@ -43,7 +42,7 @@ public class AccountDAOImpl implements AccountDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
 
 		return true;
@@ -62,7 +61,7 @@ public class AccountDAOImpl implements AccountDAO {
 	}
 
 	@Override
-	public Account getAccountById(String accountNumber) {
+	public Account getAccountById(String accountNumber) throws SQLException {
 		Account account = null;
 		try {
 			ps = connection.prepareStatement(
@@ -76,7 +75,7 @@ public class AccountDAOImpl implements AccountDAO {
 				account = new Account(res.getString(1), res.getString(2), res.getDouble(3), res.getTimestamp(4));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
 
 		return account;

@@ -105,8 +105,17 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public ProfileDTO getMyProfile(String customerId, String accountNumber) {
 
-		Account account = accountDAOImpl.getAccountById(accountNumber);
-		Customer customer = customerDAOImol.getCustomerById(customerId);
+		Account account = null;
+		Customer customer = null;
+		try {
+			account = accountDAOImpl.getAccountById(accountNumber);
+			customer = customerDAOImol.getCustomerById(customerId);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		ProfileDTO profileDTO = new ProfileDTO(customer.getCustomerName(), customer.getCustomerGender(),
 				customer.getCustomerEmail(), customer.getCustomerMobile(), account.getAccountNumber(),
 				account.getBalance());

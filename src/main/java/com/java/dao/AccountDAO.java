@@ -1,13 +1,14 @@
 package com.java.dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.java.entities.Account;
 
 public interface AccountDAO {
-	boolean createAccount(Account account);
-	boolean updateAccount(String accountNumber);
+	boolean createAccount(Account account) throws SQLException;
+	boolean updateAccount(String accountNumber) throws SQLException;
 	boolean deleteAccount(String accountNumber);
 	ArrayList<Account> getAllAccounts();
-	Account getAccountById(String accountId);
+	Account getAccountById(String accountId) throws SQLException;
 }

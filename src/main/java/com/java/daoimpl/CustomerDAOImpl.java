@@ -17,7 +17,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public boolean createCustomer(Customer customer) {
+	public boolean createCustomer(Customer customer) throws SQLException {
 
 		try {
 			ps = connection.prepareStatement(
@@ -30,7 +30,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			int res = ps.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
 		return true;
 	}
@@ -54,7 +54,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public Customer getCustomerById(String CustomerId) {
+	public Customer getCustomerById(String CustomerId) throws SQLException {
 		Customer customer = null;
 
 		try {
@@ -72,7 +72,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 
 		return customer;
