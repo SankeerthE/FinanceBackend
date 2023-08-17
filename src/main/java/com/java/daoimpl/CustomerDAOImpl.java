@@ -28,6 +28,9 @@ public class CustomerDAOImpl implements CustomerDAO {
 			ps.setString(4, customer.getCustomerEmail());
 			ps.setString(5, customer.getCustomerMobile());
 			int res = ps.executeUpdate();
+			if(res==0) {
+				return false;
+			}
 
 		} catch (SQLException e) {
 			throw e;
@@ -48,9 +51,21 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public ArrayList<Customer> getAllCustomers() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Customer> getAllCustomers() throws SQLException {
+		ArrayList<Customer> customers = new ArrayList<Customer>();
+		try {
+			ps = connection.prepareStatement(
+					"select cust_id,cust_name,cust_gender,cust_email,cust_mobile,timestamp from customer");
+			ResultSet res = ps.executeQuery();
+			while (res.next()) {
+				customers.add(new Customer(res.getString(1), res.getString(2), res.getString(3), res.getString(4),
+						res.getString(5), res.getTimestamp(6)));
+			}
+			
+		} catch (SQLException e) {
+			throw e;
+		}
+		return customers;
 	}
 
 	@Override

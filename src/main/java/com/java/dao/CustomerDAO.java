@@ -9,6 +9,6 @@ public interface CustomerDAO {
 	 boolean createCustomer(Customer customer) throws SQLException;
 	 boolean updateCustomer(String CustomerId);
 	 boolean deleteCustomer(String CustomerId);
-	 ArrayList<Customer> getAllCustomers();
+	 ArrayList<Customer> getAllCustomers() throws SQLException;
 	 Customer getCustomerById(String CustomerId) throws SQLException;
 }
