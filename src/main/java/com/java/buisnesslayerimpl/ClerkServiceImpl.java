@@ -4,9 +4,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.java.buisnesslayer.ClerkService;
+import com.java.daoimpl.AccountDAOImpl;
 import com.java.daoimpl.CustomerCredentialsDAOImpl;
 import com.java.daoimpl.CustomerDAOImpl;
 import com.java.daoimpl.LoanApplicationDAOImpl;
+import com.java.entities.Account;
 import com.java.entities.Customer;
 import com.java.entities.CustomerCredentials;
 import com.java.entities.LoanApplication;
@@ -16,6 +18,7 @@ public class ClerkServiceImpl implements ClerkService {
 	CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
 	CustomerCredentialsDAOImpl customerCredentialsDAOImpl = new CustomerCredentialsDAOImpl();
 	LoanApplicationDAOImpl loanApplicationDAOImpl = new LoanApplicationDAOImpl();
+	AccountDAOImpl accountDAOImpl = new AccountDAOImpl();
 
 	@Override
 	public boolean createCustomer(CreateCustDTO createCustDTO) throws SQLException {
@@ -29,44 +32,49 @@ public class ClerkServiceImpl implements ClerkService {
 		CustomerCredentials customerCredentials = new CustomerCredentials(customerId, createCustDTO.getUserName(),
 				createCustDTO.getPassword());
 
+		// creating account for new user
+		timestamp = System.currentTimeMillis();
+		randomNumber = (int) (Math.random() * 100000);
+		String accountNumber = "ACC" + timestamp + "-" + randomNumber;
+		Account account = new Account(accountNumber, customerId, 0, null);
+
 //		boolean createCustomerStatus = false;
 		boolean addCredentialsStatus = false;
+		boolean status = true;
 		try {
 			customerDAOImpl.createCustomer(customer);
 			addCredentialsStatus = customerCredentialsDAOImpl.addCredentials(customerCredentials);
-			System.out.println(addCredentialsStatus);
-			return true;
+			accountDAOImpl.createAccount(account);
 
 		} catch (SQLException e) {
 			if (!addCredentialsStatus) {
 				customerDAOImpl.deleteCustomer(customerId);
 			}
+			status = false;
 			throw e;
 		}
+		return status;
 
 	}
 
 	@Override
-	public ArrayList<Customer> getAllCustomers() {
+	public ArrayList<Customer> getAllCustomers() throws SQLException {
 		try {
 			ArrayList<Customer> customers = customerDAOImpl.getAllCustomers();
 			return customers;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
-
-		return null;
 	}
 
 	@Override
-	public ArrayList<LoanApplication> getAllApplications() {
+	public ArrayList<LoanApplication> getAllApplications() throws SQLException {
 		try {
 			ArrayList<LoanApplication> loanApplications = loanApplicationDAOImpl.getAllApplications();
 			return loanApplications;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
-		return null;
 	}
 
 }

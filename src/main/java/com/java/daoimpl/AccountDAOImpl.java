@@ -61,12 +61,12 @@ public class AccountDAOImpl implements AccountDAO {
 	}
 
 	@Override
-	public Account getAccountById(String accountNumber) throws SQLException {
+	public Account getAccountById(String customerId) throws SQLException {
 		Account account = null;
 		try {
 			ps = connection.prepareStatement(
-					"select account_number,cust_id,balance,timestamp from account where account_number=?");
-			ps.setString(1,accountNumber);
+					"select account_number,cust_id,balance,timestamp from account where cust_id=?");
+			ps.setString(1,customerId);
 			ResultSet res = ps.executeQuery();
 			if (res.getFetchSize() == 0) {
 				return null;

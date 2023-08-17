@@ -10,5 +10,5 @@ public interface AccountDAO {
 	boolean updateAccount(String accountNumber) throws SQLException;
 	boolean deleteAccount(String accountNumber);
 	ArrayList<Account> getAllAccounts();
-	Account getAccountById(String accountId) throws SQLException;
+	Account getAccountById(String customerId) throws SQLException;
 }

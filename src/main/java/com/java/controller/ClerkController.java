@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.java.buisnesslayerimpl.ClerkServiceImpl;
-import com.java.daoimpl.LoanApplicationDAOImpl;
 import com.java.entities.Customer;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateCustDTO;
@@ -23,39 +22,44 @@ public class ClerkController {
 	@POST
 	@Path("/createCustomer")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<Boolean> createCustomer(CreateCustDTO createCustDTO){
+	public Response<Boolean> createCustomer(CreateCustDTO createCustDTO) {
 		boolean status = false;
 		try {
 			status = clerkServiceImpl.createCustomer(createCustDTO);
-			return new Response<Boolean>("customer created successfully",200,status);
+			return new Response<Boolean>("customer created successfully", 200, status);
 		} catch (SQLException e) {
-			return new Response<Boolean>(e.getMessage(),400,status);
+			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
-		
+
 	}
-	
+
 	@GET
 	@Path("/getAllCustomers")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<Customer>> getAllCustomers(){
-		ArrayList<Customer> customers=clerkServiceImpl.getAllCustomers();
-		if(customers!=null) {
-			return new Response<ArrayList<Customer>>("retrived all the customers",200,customers);
-		}else {
-			return new Response<ArrayList<Customer>>("failed to retrive the customers",400,customers);
+	public Response<ArrayList<Customer>> getAllCustomers() {
+		ArrayList<Customer> customers = null;
+		try {
+			customers = clerkServiceImpl.getAllCustomers();
+			return new Response<ArrayList<Customer>>("retrived all the customers", 200, customers);
+		} catch (SQLException e) {
+			return new Response<ArrayList<Customer>>(e.getMessage(), 400, customers);
 		}
+
 	}
-	
+
 	@GET
 	@Path("getAllApplicaitons")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<LoanApplication>> getAllApplications(){
-		ArrayList<LoanApplication> loanApplications = clerkServiceImpl.getAllApplications();
-		if(loanApplications!=null) {
-			return new Response<ArrayList<LoanApplication>>("retrived all the applications",200,loanApplications);
-		}else {
-			return new Response<ArrayList<LoanApplication>>("failed to retrive applications",400,loanApplications);
+	public Response<ArrayList<LoanApplication>> getAllApplications() {
+		ArrayList<LoanApplication> loanApplications = null;
+		try {
+			loanApplications = clerkServiceImpl.getAllApplications();
+			return new Response<ArrayList<LoanApplication>>("retrived all the applications", 200, loanApplications);
+		} catch (SQLException e) {
+			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
+
 		}
+		
 	}
-	
+
 }

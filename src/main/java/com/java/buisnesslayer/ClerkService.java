@@ -9,6 +9,6 @@ import com.java.requestdto.CreateCustDTO;
 
 public interface ClerkService {
 	boolean createCustomer(CreateCustDTO createCustDTO) throws SQLException;
-	ArrayList<Customer> getAllCustomers();
-	ArrayList<LoanApplication> getAllApplications();
+	ArrayList<Customer> getAllCustomers() throws SQLException;
+	ArrayList<LoanApplication> getAllApplications() throws SQLException;
 }

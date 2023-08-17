@@ -1,5 +1,6 @@
 package com.java.buisnesslayer;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.java.entities.DocumentStr;
@@ -8,8 +9,8 @@ import com.java.requestdto.CreateLoanDTO;
 import com.java.responsedto.ProfileDTO;
 
 public interface CustomerService {
-	boolean addLoanApplication(CreateLoanDTO createLoanDTO, String customerId);
-	ArrayList<LoanApplication> getApplicationDetails(String customerId);
-	DocumentStr getDocument(String applicationNumber);
-	ProfileDTO getMyProfile(String customerId, String accountNumber);
+	boolean addLoanApplication(CreateLoanDTO createLoanDTO, String customerId) throws SQLException;
+	ArrayList<LoanApplication> getApplicationDetails(String customerId) throws SQLException;
+	DocumentStr getDocument(String applicationNumber) throws Exception;
+	ProfileDTO getMyProfile(String customerId) throws SQLException;
 }

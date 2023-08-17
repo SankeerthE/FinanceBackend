@@ -1,12 +1,12 @@
 package com.java.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.java.buisnesslayerimpl.CustomerServiceImpl;
 import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateLoanDTO;
-import com.java.requestdto.DocumentDTO;
 import com.java.requestdto.ProfileReqDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.responseentity.Response;
@@ -28,49 +28,58 @@ public class CustomerController {
 	public Response<Boolean> addLoanApplication(CreateLoanDTO createLoanDTO,
 			@HeaderParam("customerId") String customerId) {
 
-		boolean status = customerServiceImpl.addLoanApplication(createLoanDTO, customerId);
-		if (status) {
+		boolean status = false;
+		try {
+			status = customerServiceImpl.addLoanApplication(createLoanDTO, customerId);
 			return new Response<Boolean>("created loan application", 200, status);
-		} else {
-			return new Response<Boolean>("creation failed", 400, status);
+
+		} catch (SQLException e) {
+			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
+
 	}
 
 	@GET
 	@Path("/getMyApplications")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response<ArrayList<LoanApplication>> getMyApplications(@HeaderParam("customerId") String customerId) {
-		ArrayList<LoanApplication> loanApplications = customerServiceImpl.getApplicationDetails(customerId);
-		if (loanApplications != null) {
+		ArrayList<LoanApplication> loanApplications;
+		try {
+			loanApplications = customerServiceImpl.getApplicationDetails(customerId);
 			return new Response<ArrayList<LoanApplication>>("got data", 200, loanApplications);
-		} else {
-			return new Response<ArrayList<LoanApplication>>("did not got data", 400, null);
+		} catch (SQLException e) {
+			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, null);
 		}
+
 	}
 
 	@GET
 	@Path("/getDocument")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response<DocumentStr> getDocument(@HeaderParam("applicationId") String applicationId) {
-		DocumentStr documentStr = customerServiceImpl.getDocument(applicationId);
-		if (documentStr != null) {
+		DocumentStr documentStr;
+		try {
+			documentStr = customerServiceImpl.getDocument(applicationId);
 			return new Response<DocumentStr>("document retrived", 200, documentStr);
-		} else {
-			return new Response<DocumentStr>("document not retrived", 400, null);
+		} catch (Exception e) {
+			return new Response<DocumentStr>(e.getMessage(), 400, null);
 		}
+
 	}
-	
+
 	@GET
 	@Path("/getMyProfile")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ProfileDTO> getMyProfile(ProfileReqDTO profileReqDTO, @HeaderParam("customerId") String customerId){
-		ProfileDTO profileDTO = customerServiceImpl.getMyProfile(customerId, profileReqDTO.getAccountNumber());
-		if(profileDTO!=null) {
-			return new Response<ProfileDTO>("profile retrived",200,profileDTO);
+	public Response<ProfileDTO> getMyProfile(@HeaderParam("customerId") String customerId) {
+		ProfileDTO profileDTO;
+		try {
+			profileDTO = customerServiceImpl.getMyProfile(customerId);
+			return new Response<ProfileDTO>("profile retrived", 200, profileDTO);
+		} catch (SQLException e) {
+			return new Response<ProfileDTO>(e.getMessage(), 400, null);
+
 		}
-		else {
-			return new Response<ProfileDTO>("profile not retrived",400,null);
-		}
+
 	}
 
 }
