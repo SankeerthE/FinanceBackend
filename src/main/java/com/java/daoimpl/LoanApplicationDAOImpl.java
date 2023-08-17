@@ -48,7 +48,6 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 			ps.setDouble(6, loanApplication.getEmi());
 			ps.setString(7, loanApplication.getStatus());
 			int res = ps.executeUpdate();
-			connection.commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw e;
