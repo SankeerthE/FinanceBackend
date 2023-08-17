@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.dao.LoanApplicationDAO;
 import com.java.entities.LoanApplication;
 import com.java.jdbcconn.JdbcApp;
@@ -18,7 +19,7 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public ArrayList<LoanApplication> getAllApplications() throws SQLException {
+	public ArrayList<LoanApplication> getAllApplications() throws GenericException {
 		ArrayList<LoanApplication> loanApplications = new ArrayList<LoanApplication>();
 		try {
 			ps = connection.prepareStatement(
@@ -29,13 +30,13 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 						res.getDouble(4), res.getInt(5), res.getDouble(6), res.getString(7), res.getTimestamp(8)));
 			}
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return loanApplications;
 	}
 
 	@Override
-	public boolean addLoan(LoanApplication loanApplication) throws SQLException {
+	public boolean addLoan(LoanApplication loanApplication) throws GenericException {
 
 		try {
 			ps = connection.prepareStatement(
@@ -49,12 +50,11 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 			ps.setDouble(6, loanApplication.getEmi());
 			ps.setString(7, loanApplication.getStatus());
 			int res = ps.executeUpdate();
-			if(res==0) {
+			if (res == 0) {
 				return false;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return true;
@@ -67,46 +67,47 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 	}
 
 	@Override
-	public boolean updateLoan(String applicationNumber, LoanApplication loanApplication) throws SQLException {
-		
+	public boolean updateLoan(String applicationNumber, LoanApplication loanApplication) throws GenericException {
+
 		try {
-			ps=connection.prepareStatement("update loanapplication set status=? where application_number=?");
+			ps = connection.prepareStatement("update loanapplication set status=? where application_number=?");
 			ps.setString(1, loanApplication.getStatus());
 			ps.setString(2, applicationNumber);
 			int res = ps.executeUpdate();
-			if(res==0) {
+			if (res == 0) {
 				return false;
 			}
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return true;
 	}
 
 	@Override
-	public LoanApplication getLoanApplicationById(String applicationNumber) throws SQLException {
+	public LoanApplication getLoanApplicationById(String applicationNumber) throws GenericException {
 
 		LoanApplication loanApplication = null;
 		try {
-			ps=connection.prepareStatement("select application_number,cust_id,loan_id,amount,tenure,emi,status,timestamp from loanapplication where application_number=?");
+			ps = connection.prepareStatement(
+					"select application_number,cust_id,loan_id,amount,tenure,emi,status,timestamp from loanapplication where application_number=?");
 			ps.setString(1, applicationNumber);
 			ResultSet res = ps.executeQuery();
 
 			if (res.getFetchSize() == 0) {
 				return null;
 			}
-			while(res.next()) {
+			while (res.next()) {
 				loanApplication = new LoanApplication(res.getString(1), res.getString(2), res.getString(3),
 						res.getDouble(4), res.getInt(5), res.getDouble(6), res.getString(7), res.getTimestamp(8));
 			}
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return loanApplication;
 	}
 
 	@Override
-	public ArrayList<LoanApplication> getLoanApplicationByStatus(String status) throws SQLException {
+	public ArrayList<LoanApplication> getLoanApplicationByStatus(String status) throws GenericException {
 
 		ArrayList<LoanApplication> loanApplications = new ArrayList<>();
 		try {
@@ -122,9 +123,9 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 				loanApplications.add(new LoanApplication(res.getString(1), res.getString(2), res.getString(3),
 						res.getDouble(4), res.getInt(5), res.getDouble(6), res.getString(7), res.getTimestamp(8)));
 			}
-			
+
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return loanApplications;

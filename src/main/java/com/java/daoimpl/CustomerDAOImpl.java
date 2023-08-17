@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.dao.CustomerDAO;
 import com.java.entities.Customer;
 import com.java.jdbcconn.JdbcApp;
@@ -17,7 +18,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public boolean createCustomer(Customer customer) throws SQLException {
+	public boolean createCustomer(Customer customer) throws GenericException {
 
 		try {
 			ps = connection.prepareStatement(
@@ -33,7 +34,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			}
 
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return true;
 	}
@@ -45,7 +46,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public boolean deleteCustomer(String CustomerId) throws SQLException {
+	public boolean deleteCustomer(String CustomerId) throws GenericException {
 		
 		try {
 			ps=connection.prepareStatement("delete from customer where cust_id=?");
@@ -55,13 +56,13 @@ public class CustomerDAOImpl implements CustomerDAO {
 				return false;
 			}
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return true;
 	}
 
 	@Override
-	public ArrayList<Customer> getAllCustomers() throws SQLException {
+	public ArrayList<Customer> getAllCustomers() throws GenericException {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 		try {
 			ps = connection.prepareStatement(
@@ -73,13 +74,13 @@ public class CustomerDAOImpl implements CustomerDAO {
 			}
 			
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return customers;
 	}
 
 	@Override
-	public Customer getCustomerById(String CustomerId) throws SQLException {
+	public Customer getCustomerById(String CustomerId) throws GenericException {
 		Customer customer = null;
 
 		try {
@@ -97,7 +98,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return customer;

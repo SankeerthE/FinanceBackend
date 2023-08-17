@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import com.java.Exceptions.GenericException;
 import com.java.buisnesslayer.CustomerService;
 import com.java.daoimpl.AccountDAOImpl;
 import com.java.daoimpl.CustomerCredentialsDAOImpl;
@@ -33,14 +34,15 @@ public class CustomerServiceImpl implements CustomerService {
 	CustomerCredentialsDAOImpl customerCredentialsDAOImpl = new CustomerCredentialsDAOImpl();
 
 	@Override
-	public boolean addLoanApplication(CreateLoanDTO createLoanDTO, String CustomerId) throws SQLException {
+	public boolean addLoanApplication(CreateLoanDTO createLoanDTO, String CustomerId) throws GenericException {
 
 		long timestamp = System.currentTimeMillis();
 		int randomNumber = (int) (Math.random() * 100000);
 		String applicationId = "APP" + timestamp + "-" + randomNumber;
 
 		LoanApplication loanApplication = new LoanApplication(applicationId, CustomerId, createLoanDTO.getLoan_id(),
-				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), Status.INPROGRESS.name(), null);
+				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), Status.INPROGRESS.name(),
+				null);
 
 		String documentId = "DOC" + timestamp + "-" + randomNumber;
 		DocumentStr document = new DocumentStr(documentId, applicationId, createLoanDTO.getAadhar(),
@@ -49,16 +51,18 @@ public class CustomerServiceImpl implements CustomerService {
 		try {
 			loanApplicationDAOImpl.addLoan(loanApplication);
 			documentDAOImpl.addDocument(document);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			status = false;
 			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return status;
 	}
 
 	@Override
-	public ArrayList<LoanApplication> getApplicationDetails(String customerId) throws SQLException {
+	public ArrayList<LoanApplication> getApplicationDetails(String customerId) throws GenericException {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
 			loanApplications = loanApplicationDAOImpl.getAllApplications();
@@ -66,18 +70,20 @@ public class CustomerServiceImpl implements CustomerService {
 				return application.getCust_id().equals(customerId);
 			}).collect(Collectors.toList());
 
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
 		}
 		return loanApplications;
 	}
 
 	@Override
-	public DocumentStr getDocument(String applicationNumber) throws Exception {
+	public DocumentStr getDocument(String applicationNumber) throws GenericException {
 		DocumentBlob documentBlob = null;
 		try {
 			documentBlob = documentDAOImpl.getDocumentById(applicationNumber);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			throw e;
 		}
 		StringBuffer aadharbuf = new StringBuffer();
@@ -99,14 +105,14 @@ public class CustomerServiceImpl implements CustomerService {
 			documentStr = new DocumentStr(documentBlob.getDocument_id(), documentBlob.getApplication_number(),
 					aadharbuf.toString(), panbuf.toString(), null);
 		} catch (SQLException | IOException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return documentStr;
 	}
 
 	@Override
-	public ProfileDTO getMyProfile(String customerId) throws SQLException {
+	public ProfileDTO getMyProfile(String customerId) throws GenericException {
 
 		Account account = null;
 		Customer customer = null;
@@ -114,8 +120,10 @@ public class CustomerServiceImpl implements CustomerService {
 			account = accountDAOImpl.getAccountById(customerId);
 			customer = customerDAOImol.getCustomerById(customerId);
 
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		ProfileDTO profileDTO = new ProfileDTO(customer.getCustomerName(), customer.getCustomerGender(),
@@ -125,7 +133,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public CustomerLoginResDTO verifyCredentials(CustomerLoginDTO customerLoginDTO) throws SQLException {
+	public CustomerLoginResDTO verifyCredentials(CustomerLoginDTO customerLoginDTO) throws GenericException {
 		CustomerLoginResDTO customerLoginResDTO = null;
 		ArrayList<CustomerCredentials> customerCredentials;
 		try {
@@ -138,8 +146,10 @@ public class CustomerServiceImpl implements CustomerService {
 			if (customerCredentials != null) {
 				customerLoginResDTO = new CustomerLoginResDTO(customerCredentials.get(0).getCustomerId());
 			}
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return customerLoginResDTO;

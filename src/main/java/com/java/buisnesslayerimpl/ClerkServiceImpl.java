@@ -1,8 +1,8 @@
 package com.java.buisnesslayerimpl;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.buisnesslayer.ClerkService;
 import com.java.daoimpl.AccountDAOImpl;
 import com.java.daoimpl.CustomerCredentialsDAOImpl;
@@ -26,7 +26,7 @@ public class ClerkServiceImpl implements ClerkService {
 	DocumentDAOImpl documentDAOImpl = new DocumentDAOImpl();
 
 	@Override
-	public boolean createCustomer(CreateCustDTO createCustDTO) throws SQLException {
+	public boolean createCustomer(CreateCustDTO createCustDTO) throws GenericException {
 		// TODO Auto-generated method stub\
 		long timestamp = System.currentTimeMillis();
 		int randomNumber = (int) (Math.random() * 100000);
@@ -43,7 +43,6 @@ public class ClerkServiceImpl implements ClerkService {
 		String accountNumber = "ACC" + timestamp + "-" + randomNumber;
 		Account account = new Account(accountNumber, customerId, 0, null);
 
-//		boolean createCustomerStatus = false;
 		boolean addCredentialsStatus = false;
 		boolean status = true;
 		try {
@@ -51,46 +50,50 @@ public class ClerkServiceImpl implements ClerkService {
 			addCredentialsStatus = customerCredentialsDAOImpl.addCredentials(customerCredentials);
 			accountDAOImpl.createAccount(account);
 
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			if (!addCredentialsStatus) {
 				customerDAOImpl.deleteCustomer(customerId);
 			}
 			status = false;
 			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
 		}
 		return status;
 
 	}
 
 	@Override
-	public ArrayList<Customer> getAllCustomers() throws SQLException {
+	public ArrayList<Customer> getAllCustomers() throws GenericException {
 		try {
 			ArrayList<Customer> customers = customerDAOImpl.getAllCustomers();
 			return customers;
-		} catch (SQLException e) {
-			throw e;
+		} catch (GenericException e) {
+			throw new GenericException(e.getMessage(), e);
 		}
 	}
 
 	@Override
-	public ArrayList<LoanApplication> getAllApplications() throws SQLException {
+	public ArrayList<LoanApplication> getAllApplications() throws GenericException {
 		try {
 			ArrayList<LoanApplication> loanApplications = loanApplicationDAOImpl.getAllApplications();
 			return loanApplications;
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			throw e;
+		}catch(Exception e) {
+			throw new GenericException(e.getMessage(), e);
 		}
 	}
 
 	@Override
-	public boolean createLoanApplication(CreateLoanDTO createLoanDTO, String CustomerId) throws SQLException {
+	public boolean createLoanApplication(CreateLoanDTO createLoanDTO, String CustomerId) throws GenericException {
 		long timestamp = System.currentTimeMillis();
 		int randomNumber = (int) (Math.random() * 100000);
 		String applicationId = "APP" + timestamp + "-" + randomNumber;
 
 		LoanApplication loanApplication = new LoanApplication(applicationId, CustomerId, createLoanDTO.getLoan_id(),
-				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(),
-				Status.INPROGRESS.name(), null);
+				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), Status.INPROGRESS.name(),
+				null);
 
 		String documentId = "DOC" + timestamp + "-" + randomNumber;
 		DocumentStr document = new DocumentStr(documentId, applicationId, createLoanDTO.getAadhar(),
@@ -99,9 +102,11 @@ public class ClerkServiceImpl implements ClerkService {
 		try {
 			loanApplicationDAOImpl.addLoan(loanApplication);
 			documentDAOImpl.addDocument(document);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			status = false;
 			throw e;
+		}catch(Exception e) {
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return status;

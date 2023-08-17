@@ -1,12 +1,11 @@
 package com.java.dao;
 
-import java.sql.SQLException;
-
+import com.java.Exceptions.GenericException;
 import com.java.entities.DocumentBlob;
 import com.java.entities.DocumentStr;
 
 public interface DocumentDAO {
-	boolean addDocument(DocumentStr document) throws SQLException;
+	boolean addDocument(DocumentStr document) throws GenericException;
 
 	DocumentStr getAllDocuments();
 
@@ -14,5 +13,5 @@ public interface DocumentDAO {
 
 	boolean deleteDocument(String documentId);
 
-	DocumentBlob getDocumentById(String documentId) throws SQLException;
+	DocumentBlob getDocumentById(String documentId) throws GenericException;
 }

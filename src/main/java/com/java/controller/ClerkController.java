@@ -1,8 +1,8 @@
 package com.java.controller;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.buisnesslayerimpl.ClerkServiceImpl;
 import com.java.entities.Customer;
 import com.java.entities.LoanApplication;
@@ -29,7 +29,7 @@ public class ClerkController {
 		try {
 			status = clerkServiceImpl.createCustomer(createCustDTO);
 			return new Response<Boolean>("customer created successfully", 200, status);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 
@@ -43,7 +43,7 @@ public class ClerkController {
 		try {
 			customers = clerkServiceImpl.getAllCustomers();
 			return new Response<ArrayList<Customer>>("retrived all the customers", 200, customers);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<ArrayList<Customer>>(e.getMessage(), 400, customers);
 		}
 
@@ -57,7 +57,7 @@ public class ClerkController {
 		try {
 			loanApplications = clerkServiceImpl.getAllApplications();
 			return new Response<ArrayList<LoanApplication>>("retrived all the applications", 200, loanApplications);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
 
 		}
@@ -73,7 +73,7 @@ public class ClerkController {
 			status = clerkServiceImpl.createLoanApplication(createLoanDTO, customerId);
 			return new Response<Boolean>("created loan application", 200, status);
 
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 	}

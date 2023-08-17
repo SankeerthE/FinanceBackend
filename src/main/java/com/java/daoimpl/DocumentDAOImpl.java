@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.java.Exceptions.GenericException;
 import com.java.dao.DocumentDAO;
 import com.java.entities.DocumentBlob;
 import com.java.entities.DocumentStr;
@@ -18,7 +19,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public boolean addDocument(DocumentStr document) throws SQLException {
+	public boolean addDocument(DocumentStr document) throws GenericException {
 		try {
 			ps = connection
 					.prepareStatement("insert into document(document_id,application_number,aadhar,pan,timestamp) "
@@ -36,8 +37,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 			int res = ps.executeUpdate();
 
 		} catch (SQLException e) {
-			
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return true;
 	}
@@ -61,7 +61,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 	}
 
 	@Override
-	public DocumentBlob getDocumentById(String applicationId) throws SQLException {
+	public DocumentBlob getDocumentById(String applicationId) throws GenericException {
 		try {
 			ps = connection.prepareStatement(
 					"select document_id,application_number,aadhar,pan,timestamp from document where application_number=?");
@@ -73,7 +73,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 			}
 
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return null;
 	}

@@ -1,15 +1,15 @@
 package com.java.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.entities.LoanApplication;
 
 public interface LoanApplicationDAO {
-	ArrayList<LoanApplication> getAllApplications() throws SQLException;
-	boolean addLoan(LoanApplication loanApplication) throws SQLException;
+	ArrayList<LoanApplication> getAllApplications() throws GenericException;
+	boolean addLoan(LoanApplication loanApplication) throws GenericException;
 	boolean deleteLoan(String applicationNumber);
-	boolean updateLoan(String applicationNumber, LoanApplication loanApplication) throws SQLException;
-	LoanApplication getLoanApplicationById(String applicationNumber) throws SQLException;
-	ArrayList<LoanApplication> getLoanApplicationByStatus(String status) throws SQLException;
+	boolean updateLoan(String applicationNumber, LoanApplication loanApplication) throws GenericException;
+	LoanApplication getLoanApplicationById(String applicationNumber) throws GenericException;
+	ArrayList<LoanApplication> getLoanApplicationByStatus(String status) throws GenericException;
 }

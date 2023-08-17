@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.dao.AccountDAO;
 import com.java.entities.Account;
 import com.java.jdbcconn.JdbcApp;
@@ -16,7 +17,7 @@ public class AccountDAOImpl implements AccountDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public boolean createAccount(Account account) throws SQLException {
+	public boolean createAccount(Account account) throws GenericException {
 		try {
 			ps = connection.prepareStatement(
 					"insert into account(account_number,cust_id,balance,timestamp) values(?,?,?,CURRENT_TIMESTAMP)");
@@ -25,13 +26,13 @@ public class AccountDAOImpl implements AccountDAO {
 			ps.setDouble(3, account.getBalance());
 			int res = ps.executeUpdate();
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return true;
 	}
 
 	@Override
-	public boolean updateAccount(String accountNumber, Account account) throws SQLException {
+	public boolean updateAccount(String accountNumber, Account account) throws GenericException {
 
 		try {
 			ps = connection.prepareStatement("update account set balance=? where account_number=?");
@@ -43,7 +44,7 @@ public class AccountDAOImpl implements AccountDAO {
 			}
 
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return true;
@@ -62,7 +63,7 @@ public class AccountDAOImpl implements AccountDAO {
 	}
 
 	@Override
-	public Account getAccountById(String customerId) throws SQLException {
+	public Account getAccountById(String customerId) throws GenericException {
 		Account account = null;
 		try {
 			ps = connection
@@ -76,7 +77,7 @@ public class AccountDAOImpl implements AccountDAO {
 				account = new Account(res.getString(1), res.getString(2), res.getDouble(3), res.getTimestamp(4));
 			}
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return account;

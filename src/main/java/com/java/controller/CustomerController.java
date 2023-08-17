@@ -1,8 +1,8 @@
 package com.java.controller;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.buisnesslayerimpl.CustomerServiceImpl;
 import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
@@ -34,7 +34,7 @@ public class CustomerController {
 			status = customerServiceImpl.addLoanApplication(createLoanDTO, customerId);
 			return new Response<Boolean>("created loan application", 200, status);
 
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 
@@ -48,7 +48,7 @@ public class CustomerController {
 		try {
 			loanApplications = customerServiceImpl.getApplicationDetails(customerId);
 			return new Response<ArrayList<LoanApplication>>("got data", 200, loanApplications);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, null);
 		}
 
@@ -62,7 +62,7 @@ public class CustomerController {
 		try {
 			documentStr = customerServiceImpl.getDocument(applicationId);
 			return new Response<DocumentStr>("document retrived", 200, documentStr);
-		} catch (Exception e) {
+		} catch (GenericException e) {
 			return new Response<DocumentStr>(e.getMessage(), 400, null);
 		}
 
@@ -76,7 +76,7 @@ public class CustomerController {
 		try {
 			profileDTO = customerServiceImpl.getMyProfile(customerId);
 			return new Response<ProfileDTO>("profile retrived", 200, profileDTO);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<ProfileDTO>(e.getMessage(), 400, profileDTO);
 
 		}
@@ -91,7 +91,7 @@ public class CustomerController {
 		try {
 			customerLoginResDTO = customerServiceImpl.verifyCredentials(customerLoginDTO);
 			return new Response<CustomerLoginResDTO>("correct credentials", 200, customerLoginResDTO);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<CustomerLoginResDTO>(e.getMessage(), 200, customerLoginResDTO);
 		}
 

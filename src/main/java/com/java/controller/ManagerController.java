@@ -1,8 +1,8 @@
 package com.java.controller;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.buisnesslayerimpl.ManagerServiceImpl;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.ApproveDTO;
@@ -28,7 +28,7 @@ public class ManagerController {
 			loanApplications = managerServiceImpl.getApplications(Status.INPROGRESS.toString());
 			return new Response<ArrayList<LoanApplication>>("feteched waiting for approval applications successfully",
 					200, loanApplications);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
 		}
 	}
@@ -42,7 +42,7 @@ public class ManagerController {
 			loanApplications = managerServiceImpl.getApplications(Status.APPROVED.toString());
 			return new Response<ArrayList<LoanApplication>>("feteched waiting for approval applications successfully",
 					200, loanApplications);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
 		}
 	}
@@ -56,7 +56,7 @@ public class ManagerController {
 			loanApplications = managerServiceImpl.getApplications(Status.REJECTED.toString());
 			return new Response<ArrayList<LoanApplication>>("feteched waiting for approval applications successfully",
 					200, loanApplications);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
 		}
 	}
@@ -69,7 +69,7 @@ public class ManagerController {
 		try {
 			loanApplications = managerServiceImpl.getAllApplications();
 			return new Response<ArrayList<LoanApplication>>("retrived all the applications", 200, loanApplications);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
 
 		}
@@ -84,7 +84,7 @@ public class ManagerController {
 		try {
 			status=managerServiceImpl.approveApplication(approveDTO);
 			return new Response<Boolean>("application got approved",200,status);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(),400,status);
 		}
 	}
@@ -97,7 +97,7 @@ public class ManagerController {
 		try {
 			status=managerServiceImpl.rejectApplication(approveDTO);
 			return new Response<Boolean>("application got rejected",200,status);
-		} catch (SQLException e) {
+		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(),400,status);
 		}
 	}

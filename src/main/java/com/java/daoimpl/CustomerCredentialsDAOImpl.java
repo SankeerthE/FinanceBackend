@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.java.Exceptions.GenericException;
 import com.java.dao.CustomerCredentialsDAO;
 import com.java.entities.CustomerCredentials;
 import com.java.jdbcconn.JdbcApp;
@@ -17,7 +18,7 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public boolean addCredentials(CustomerCredentials customerCredentials) throws SQLException {
+	public boolean addCredentials(CustomerCredentials customerCredentials) throws GenericException {
 		boolean status = true;
 		try {
 			ps = connection
@@ -31,7 +32,7 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 			}
 		} catch (SQLException e) {
 			status = false;
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 		return status;
 	}
@@ -49,7 +50,7 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 	}
 
 	@Override
-	public CustomerCredentials getCredentialsById(String customerId) {
+	public CustomerCredentials getCredentialsById(String customerId) throws GenericException {
 		CustomerCredentials customerCredentials = null;
 		try {
 			ps = connection
@@ -64,15 +65,14 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 				customerCredentials = new CustomerCredentials(res.getString(1), res.getString(2), res.getString(3));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return customerCredentials;
 	}
 
 	@Override
-	public ArrayList<CustomerCredentials> getAllCredentials() throws SQLException {
+	public ArrayList<CustomerCredentials> getAllCredentials() throws GenericException {
 		ArrayList<CustomerCredentials> customerCredentials = new ArrayList<CustomerCredentials>();
 		try {
 			ps = connection.prepareStatement("select cust_id,username,password from customer_credentials");
@@ -82,7 +82,7 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 			}
 
 		} catch (SQLException e) {
-			throw e;
+			throw new GenericException(e.getMessage(), e);
 		}
 
 		return customerCredentials;
