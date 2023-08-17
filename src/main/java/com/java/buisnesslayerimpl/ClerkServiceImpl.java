@@ -34,12 +34,13 @@ public class ClerkServiceImpl implements ClerkService {
 		try {
 			customerDAOImpl.createCustomer(customer);
 			addCredentialsStatus = customerCredentialsDAOImpl.addCredentials(customerCredentials);
-			if (!addCredentialsStatus) {
-				customerDAOImpl.deleteCustomer(customerId);
-			}
+			System.out.println(addCredentialsStatus);
 			return true;
 
 		} catch (SQLException e) {
+			if (!addCredentialsStatus) {
+				customerDAOImpl.deleteCustomer(customerId);
+			}
 			throw e;
 		}
 

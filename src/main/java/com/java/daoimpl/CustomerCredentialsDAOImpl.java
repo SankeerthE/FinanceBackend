@@ -16,8 +16,8 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 	PreparedStatement ps = jdbc.getPs();
 
 	@Override
-	public boolean addCredentials(CustomerCredentials customerCredentials) {
-
+	public boolean addCredentials(CustomerCredentials customerCredentials) throws SQLException {
+		boolean status=true;
 		try {
 			ps = connection
 					.prepareStatement("insert into customer_credentials(cust_id,username,password) values(?,?,?)");
@@ -26,13 +26,13 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 			ps.setString(3, customerCredentials.getPassword());
 			int res = ps.executeUpdate();
 			if (res == 0) {
-				return false;
+				status= false;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			status=false;
+			throw e;
 		}
-		return true;
+		return status;
 	}
 
 	@Override
