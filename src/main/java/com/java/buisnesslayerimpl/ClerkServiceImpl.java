@@ -7,18 +7,22 @@ import com.java.buisnesslayer.ClerkService;
 import com.java.daoimpl.AccountDAOImpl;
 import com.java.daoimpl.CustomerCredentialsDAOImpl;
 import com.java.daoimpl.CustomerDAOImpl;
+import com.java.daoimpl.DocumentDAOImpl;
 import com.java.daoimpl.LoanApplicationDAOImpl;
 import com.java.entities.Account;
 import com.java.entities.Customer;
 import com.java.entities.CustomerCredentials;
+import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateCustDTO;
+import com.java.requestdto.CreateLoanDTO;
 
 public class ClerkServiceImpl implements ClerkService {
 	CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
 	CustomerCredentialsDAOImpl customerCredentialsDAOImpl = new CustomerCredentialsDAOImpl();
 	LoanApplicationDAOImpl loanApplicationDAOImpl = new LoanApplicationDAOImpl();
 	AccountDAOImpl accountDAOImpl = new AccountDAOImpl();
+	DocumentDAOImpl documentDAOImpl = new DocumentDAOImpl();
 
 	@Override
 	public boolean createCustomer(CreateCustDTO createCustDTO) throws SQLException {
@@ -75,6 +79,30 @@ public class ClerkServiceImpl implements ClerkService {
 		} catch (SQLException e) {
 			throw e;
 		}
+	}
+
+	@Override
+	public boolean createLoanApplication(CreateLoanDTO createLoanDTO, String CustomerId) throws SQLException {
+		long timestamp = System.currentTimeMillis();
+		int randomNumber = (int) (Math.random() * 100000);
+		String applicationId = "APP" + timestamp + "-" + randomNumber;
+
+		LoanApplication loanApplication = new LoanApplication(applicationId, CustomerId, createLoanDTO.getLoan_id(),
+				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), "under progress", null);
+
+		String documentId = "DOC" + timestamp + "-" + randomNumber;
+		DocumentStr document = new DocumentStr(documentId, applicationId, createLoanDTO.getAadhar(),
+				createLoanDTO.getPan(), null);
+		boolean status = true;
+		try {
+			loanApplicationDAOImpl.addLoan(loanApplication);
+			documentDAOImpl.addDocument(document);
+		} catch (SQLException e) {
+			status = false;
+			throw e;
+		}
+
+		return status;
 	}
 
 }

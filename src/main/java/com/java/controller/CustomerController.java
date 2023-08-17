@@ -7,7 +7,9 @@ import com.java.buisnesslayerimpl.CustomerServiceImpl;
 import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateLoanDTO;
+import com.java.requestdto.CustomerLoginDTO;
 import com.java.requestdto.ProfileReqDTO;
+import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.responseentity.Response;
 
@@ -71,13 +73,27 @@ public class CustomerController {
 	@Path("/getMyProfile")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response<ProfileDTO> getMyProfile(@HeaderParam("customerId") String customerId) {
-		ProfileDTO profileDTO;
+		ProfileDTO profileDTO = null;
 		try {
 			profileDTO = customerServiceImpl.getMyProfile(customerId);
 			return new Response<ProfileDTO>("profile retrived", 200, profileDTO);
 		} catch (SQLException e) {
-			return new Response<ProfileDTO>(e.getMessage(), 400, null);
+			return new Response<ProfileDTO>(e.getMessage(), 400, profileDTO);
 
+		}
+
+	}
+
+	@POST
+	@Path("/login")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response<CustomerLoginResDTO> verifyLogin(CustomerLoginDTO customerLoginDTO) {
+		CustomerLoginResDTO customerLoginResDTO = null;
+		try {
+			customerLoginResDTO = customerServiceImpl.verifyCredentials(customerLoginDTO);
+			return new Response<CustomerLoginResDTO>("correct credentials", 200, customerLoginResDTO);
+		} catch (SQLException e) {
+			return new Response<CustomerLoginResDTO>(e.getMessage(), 200, customerLoginResDTO);
 		}
 
 	}

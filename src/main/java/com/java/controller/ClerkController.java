@@ -7,9 +7,11 @@ import com.java.buisnesslayerimpl.ClerkServiceImpl;
 import com.java.entities.Customer;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateCustDTO;
+import com.java.requestdto.CreateLoanDTO;
 import com.java.responseentity.Response;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -18,7 +20,7 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/clerk")
 public class ClerkController {
 	ClerkServiceImpl clerkServiceImpl = new ClerkServiceImpl();
-
+	
 	@POST
 	@Path("/createCustomer")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -48,7 +50,7 @@ public class ClerkController {
 	}
 
 	@GET
-	@Path("getAllApplicaitons")
+	@Path("/getAllApplicaitons")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response<ArrayList<LoanApplication>> getAllApplications() {
 		ArrayList<LoanApplication> loanApplications = null;
@@ -60,6 +62,20 @@ public class ClerkController {
 
 		}
 		
+	}
+	
+	@POST
+	@Path("/createLoanApplication")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response<Boolean> createLoanApplication(CreateLoanDTO createLoanDTO, @HeaderParam("customerId") String customerId){
+		boolean status = false;
+		try {
+			status = clerkServiceImpl.createLoanApplication(createLoanDTO, customerId);
+			return new Response<Boolean>("created loan application", 200, status);
+
+		} catch (SQLException e) {
+			return new Response<Boolean>(e.getMessage(), 400, status);
+		}
 	}
 
 }

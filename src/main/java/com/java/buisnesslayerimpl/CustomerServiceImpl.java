@@ -9,15 +9,19 @@ import java.util.stream.Collectors;
 
 import com.java.buisnesslayer.CustomerService;
 import com.java.daoimpl.AccountDAOImpl;
+import com.java.daoimpl.CustomerCredentialsDAOImpl;
 import com.java.daoimpl.CustomerDAOImpl;
 import com.java.daoimpl.DocumentDAOImpl;
 import com.java.daoimpl.LoanApplicationDAOImpl;
 import com.java.entities.Account;
 import com.java.entities.Customer;
+import com.java.entities.CustomerCredentials;
 import com.java.entities.DocumentBlob;
 import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateLoanDTO;
+import com.java.requestdto.CustomerLoginDTO;
+import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
 
 public class CustomerServiceImpl implements CustomerService {
@@ -25,6 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
 	DocumentDAOImpl documentDAOImpl = new DocumentDAOImpl();
 	CustomerDAOImpl customerDAOImol = new CustomerDAOImpl();
 	AccountDAOImpl accountDAOImpl = new AccountDAOImpl();
+	CustomerCredentialsDAOImpl customerCredentialsDAOImpl = new CustomerCredentialsDAOImpl();
 
 	@Override
 	public boolean addLoanApplication(CreateLoanDTO createLoanDTO, String CustomerId) throws SQLException {
@@ -90,8 +95,8 @@ public class CustomerServiceImpl implements CustomerService {
 				panbuf.append(temp);
 			}
 
-			documentStr = new DocumentStr(documentBlob.getDocument_id(),
-					documentBlob.getApplication_number(), aadharbuf.toString(), panbuf.toString(), null);
+			documentStr = new DocumentStr(documentBlob.getDocument_id(), documentBlob.getApplication_number(),
+					aadharbuf.toString(), panbuf.toString(), null);
 		} catch (SQLException | IOException e) {
 			throw e;
 		}
@@ -116,6 +121,27 @@ public class CustomerServiceImpl implements CustomerService {
 				customer.getCustomerEmail(), customer.getCustomerMobile(), account.getAccountNumber(),
 				account.getBalance());
 		return profileDTO;
+	}
+
+	@Override
+	public CustomerLoginResDTO verifyCredentials(CustomerLoginDTO customerLoginDTO) throws SQLException {
+		CustomerLoginResDTO customerLoginResDTO = null;
+		ArrayList<CustomerCredentials> customerCredentials;
+		try {
+			customerCredentials = customerCredentialsDAOImpl.getAllCredentials();
+			customerCredentials = (ArrayList<CustomerCredentials>) customerCredentials.stream().filter(credentials -> {
+				return credentials.getUsername().equals(customerLoginDTO.getUsername())
+						&& credentials.getPassword().equals(customerLoginDTO.getPassword());
+			}).collect(Collectors.toList());
+
+			if (customerCredentials != null) {
+				customerLoginResDTO = new CustomerLoginResDTO(customerCredentials.get(0).getCustomerId());
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+
+		return customerLoginResDTO;
 	}
 
 }

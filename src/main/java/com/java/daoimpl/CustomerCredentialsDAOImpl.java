@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.java.dao.CustomerCredentialsDAO;
 import com.java.entities.CustomerCredentials;
@@ -17,7 +18,7 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 
 	@Override
 	public boolean addCredentials(CustomerCredentials customerCredentials) throws SQLException {
-		boolean status=true;
+		boolean status = true;
 		try {
 			ps = connection
 					.prepareStatement("insert into customer_credentials(cust_id,username,password) values(?,?,?)");
@@ -26,10 +27,10 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 			ps.setString(3, customerCredentials.getPassword());
 			int res = ps.executeUpdate();
 			if (res == 0) {
-				status= false;
+				status = false;
 			}
 		} catch (SQLException e) {
-			status=false;
+			status = false;
 			throw e;
 		}
 		return status;
@@ -65,6 +66,23 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+
+		return customerCredentials;
+	}
+
+	@Override
+	public ArrayList<CustomerCredentials> getAllCredentials() throws SQLException {
+		ArrayList<CustomerCredentials> customerCredentials = new ArrayList<CustomerCredentials>();
+		try {
+			ps = connection.prepareStatement("select cust_id,username,password from customer_credentials");
+			ResultSet res = ps.executeQuery();
+			while (res.next()) {
+				customerCredentials.add(new CustomerCredentials(res.getString(1), res.getString(2), res.getString(3)));
+			}
+
+		} catch (SQLException e) {
+			throw e;
 		}
 
 		return customerCredentials;
