@@ -23,6 +23,7 @@ import com.java.requestdto.CreateLoanDTO;
 import com.java.requestdto.CustomerLoginDTO;
 import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
+import com.java.utilities.Status;
 
 public class CustomerServiceImpl implements CustomerService {
 	LoanApplicationDAOImpl loanApplicationDAOImpl = new LoanApplicationDAOImpl();
@@ -39,7 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
 		String applicationId = "APP" + timestamp + "-" + randomNumber;
 
 		LoanApplication loanApplication = new LoanApplication(applicationId, CustomerId, createLoanDTO.getLoan_id(),
-				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), "under progress", null);
+				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), Status.INPROGRESS.name(), null);
 
 		String documentId = "DOC" + timestamp + "-" + randomNumber;
 		DocumentStr document = new DocumentStr(documentId, applicationId, createLoanDTO.getAadhar(),

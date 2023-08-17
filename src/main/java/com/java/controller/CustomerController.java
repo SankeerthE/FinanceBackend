@@ -8,7 +8,6 @@ import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateLoanDTO;
 import com.java.requestdto.CustomerLoginDTO;
-import com.java.requestdto.ProfileReqDTO;
 import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.responseentity.Response;

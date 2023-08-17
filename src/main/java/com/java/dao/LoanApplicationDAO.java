@@ -8,7 +8,8 @@ import com.java.entities.LoanApplication;
 public interface LoanApplicationDAO {
 	ArrayList<LoanApplication> getAllApplications() throws SQLException;
 	boolean addLoan(LoanApplication loanApplication) throws SQLException;
-	boolean deleteLoan(String applicationId);
-	boolean updateLoan(String applicationId, LoanApplication loanApplication);
-	LoanApplication getLoanApplicationById(String applicationId);
+	boolean deleteLoan(String applicationNumber);
+	boolean updateLoan(String applicationNumber, LoanApplication loanApplication) throws SQLException;
+	LoanApplication getLoanApplicationById(String applicationNumber) throws SQLException;
+	ArrayList<LoanApplication> getLoanApplicationByStatus(String status) throws SQLException;
 }

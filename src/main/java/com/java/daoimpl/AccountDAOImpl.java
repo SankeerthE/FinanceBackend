@@ -31,11 +31,12 @@ public class AccountDAOImpl implements AccountDAO {
 	}
 
 	@Override
-	public boolean updateAccount(String accountNumber) throws SQLException {
+	public boolean updateAccount(String accountNumber, Account account) throws SQLException {
 
 		try {
 			ps = connection.prepareStatement("update account set balance=? where account_number=?");
-			ps.setString(1, accountNumber);
+			ps.setDouble(1, account.getBalance());
+			ps.setString(2, accountNumber);
 			int res = ps.executeUpdate();
 			if (res == 0) {
 				return false;
@@ -64,9 +65,9 @@ public class AccountDAOImpl implements AccountDAO {
 	public Account getAccountById(String customerId) throws SQLException {
 		Account account = null;
 		try {
-			ps = connection.prepareStatement(
-					"select account_number,cust_id,balance,timestamp from account where cust_id=?");
-			ps.setString(1,customerId);
+			ps = connection
+					.prepareStatement("select account_number,cust_id,balance,timestamp from account where cust_id=?");
+			ps.setString(1, customerId);
 			ResultSet res = ps.executeQuery();
 			if (res.getFetchSize() == 0) {
 				return null;

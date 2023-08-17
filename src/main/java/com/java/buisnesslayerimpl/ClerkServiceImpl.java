@@ -16,6 +16,7 @@ import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateCustDTO;
 import com.java.requestdto.CreateLoanDTO;
+import com.java.utilities.Status;
 
 public class ClerkServiceImpl implements ClerkService {
 	CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
@@ -88,7 +89,8 @@ public class ClerkServiceImpl implements ClerkService {
 		String applicationId = "APP" + timestamp + "-" + randomNumber;
 
 		LoanApplication loanApplication = new LoanApplication(applicationId, CustomerId, createLoanDTO.getLoan_id(),
-				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), "under progress", null);
+				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(),
+				Status.INPROGRESS.name(), null);
 
 		String documentId = "DOC" + timestamp + "-" + randomNumber;
 		DocumentStr document = new DocumentStr(documentId, applicationId, createLoanDTO.getAadhar(),
