@@ -34,7 +34,6 @@ public class DocumentDAOImpl implements DocumentDAO {
 			ps.setBlob(3, aadharBlob);
 			ps.setBlob(4, panBlob);
 			int res = ps.executeUpdate();
-			connection.commit();
 
 		} catch (SQLException e) {
 			

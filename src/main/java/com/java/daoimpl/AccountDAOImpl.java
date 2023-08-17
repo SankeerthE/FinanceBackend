@@ -24,7 +24,6 @@ public class AccountDAOImpl implements AccountDAO {
 			ps.setString(2, account.getCustomerId());
 			ps.setDouble(3, account.getBalance());
 			int res = ps.executeUpdate();
-			connection.commit();
 		} catch (SQLException e) {
 			throw e;
 		}
@@ -41,7 +40,6 @@ public class AccountDAOImpl implements AccountDAO {
 			if (res == 0) {
 				return false;
 			}
-			connection.commit();
 
 		} catch (SQLException e) {
 			throw e;
