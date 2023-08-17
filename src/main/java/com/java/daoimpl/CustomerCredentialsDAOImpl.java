@@ -28,6 +28,7 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 			if (res == 0) {
 				return false;
 			}
+			connection.commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

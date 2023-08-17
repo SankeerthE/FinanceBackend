@@ -31,6 +31,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			if(res==0) {
 				return false;
 			}
+			connection.commit();
 
 		} catch (SQLException e) {
 			throw e;
