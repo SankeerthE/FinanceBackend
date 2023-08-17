@@ -45,9 +45,19 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public boolean deleteCustomer(String CustomerId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deleteCustomer(String CustomerId) throws SQLException {
+		
+		try {
+			ps=connection.prepareStatement("delete from customer where cust_id=?");
+			ps.setString(1, CustomerId);
+			int res=ps.executeUpdate();
+			if(res==0) {
+				return false;
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		return true;
 	}
 
 	@Override

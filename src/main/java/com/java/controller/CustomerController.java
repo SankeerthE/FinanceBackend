@@ -51,8 +51,8 @@ public class CustomerController {
 	@GET
 	@Path("/getDocument")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<DocumentStr> getDocument(DocumentDTO documentDTO) {
-		DocumentStr documentStr = customerServiceImpl.getDocument(documentDTO.getApplicationId());
+	public Response<DocumentStr> getDocument(@HeaderParam("applicationId") String applicationId) {
+		DocumentStr documentStr = customerServiceImpl.getDocument(applicationId);
 		if (documentStr != null) {
 			return new Response<DocumentStr>("document retrived", 200, documentStr);
 		} else {

@@ -18,7 +18,7 @@ public class ClerkServiceImpl implements ClerkService {
 	LoanApplicationDAOImpl loanApplicationDAOImpl = new LoanApplicationDAOImpl();
 
 	@Override
-	public boolean createCustomer(CreateCustDTO createCustDTO) {
+	public boolean createCustomer(CreateCustDTO createCustDTO) throws SQLException {
 		// TODO Auto-generated method stub\
 		long timestamp = System.currentTimeMillis();
 		int randomNumber = (int) (Math.random() * 100000);
@@ -26,29 +26,34 @@ public class ClerkServiceImpl implements ClerkService {
 
 		Customer customer = new Customer(customerId, createCustDTO.getCustomerName(), createCustDTO.getCustomerGender(),
 				createCustDTO.getCustomerEmail(), createCustDTO.getCustomerMobile(), null);
-		CustomerCredentials customerCredentials=new CustomerCredentials(customerId, createCustDTO.getUserName(), createCustDTO.getPassword());
-		
+		CustomerCredentials customerCredentials = new CustomerCredentials(customerId, createCustDTO.getUserName(),
+				createCustDTO.getPassword());
+
+//		boolean createCustomerStatus = false;
+		boolean addCredentialsStatus = false;
 		try {
 			customerDAOImpl.createCustomer(customer);
-			customerCredentialsDAOImpl.addCredentials(customerCredentials);
-			
+			addCredentialsStatus = customerCredentialsDAOImpl.addCredentials(customerCredentials);
+			if (!addCredentialsStatus) {
+				customerDAOImpl.deleteCustomer(customerId);
+			}
+			return true;
+
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			throw e;
 		}
 
-		return true;
 	}
 
 	@Override
 	public ArrayList<Customer> getAllCustomers() {
 		try {
-			ArrayList<Customer> customers=customerDAOImpl.getAllCustomers();
+			ArrayList<Customer> customers = customerDAOImpl.getAllCustomers();
 			return customers;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 

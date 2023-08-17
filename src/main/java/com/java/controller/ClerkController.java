@@ -1,5 +1,6 @@
 package com.java.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.java.buisnesslayerimpl.ClerkServiceImpl;
@@ -23,12 +24,14 @@ public class ClerkController {
 	@Path("/createCustomer")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response<Boolean> createCustomer(CreateCustDTO createCustDTO){
-		boolean status = clerkServiceImpl.createCustomer(createCustDTO);
-		if(status) {
+		boolean status = false;
+		try {
+			status = clerkServiceImpl.createCustomer(createCustDTO);
 			return new Response<Boolean>("customer created successfully",200,status);
-		}else {
-			return new Response<Boolean>("failed to create customer",400,status);
+		} catch (SQLException e) {
+			return new Response<Boolean>(e.getMessage(),400,status);
 		}
+		
 	}
 	
 	@GET
