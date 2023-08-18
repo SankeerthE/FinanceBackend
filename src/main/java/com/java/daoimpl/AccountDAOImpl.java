@@ -18,6 +18,7 @@ public class AccountDAOImpl implements AccountDAO {
 
 	@Override
 	public boolean createAccount(Account account) throws GenericException {
+		boolean status=true;
 		try {
 			ps = connection.prepareStatement(
 					"insert into account(account_number,cust_id,balance,timestamp) values(?,?,?,CURRENT_TIMESTAMP)");
@@ -25,29 +26,34 @@ public class AccountDAOImpl implements AccountDAO {
 			ps.setString(2, account.getCustomerId());
 			ps.setDouble(3, account.getBalance());
 			int res = ps.executeUpdate();
+			if(res==0) {
+				status=false;
+				throw new GenericException("failed to create the account");
+			}
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);
 		}
-		return true;
+		return status;
 	}
 
 	@Override
 	public boolean updateAccount(String accountNumber, Account account) throws GenericException {
-
+		boolean status=true;
 		try {
 			ps = connection.prepareStatement("update account set balance=? where account_number=?");
 			ps.setDouble(1, account.getBalance());
 			ps.setString(2, accountNumber);
 			int res = ps.executeUpdate();
 			if (res == 0) {
-				return false;
+				status=false;
+				throw new GenericException("failed to update account balance");
 			}
 
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);
 		}
 
-		return true;
+		return status;
 	}
 
 	@Override
@@ -71,7 +77,7 @@ public class AccountDAOImpl implements AccountDAO {
 			ps.setString(1, customerId);
 			ResultSet res = ps.executeQuery();
 			if (res.getFetchSize() == 0) {
-				return null;
+				throw new GenericException("there is no account present for "+customerId);
 			}
 			while (res.next()) {
 				account = new Account(res.getString(1), res.getString(2), res.getDouble(3), res.getTimestamp(4));
