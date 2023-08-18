@@ -1,6 +1,5 @@
 package com.java.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.java.Exceptions.GenericException;

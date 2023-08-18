@@ -20,6 +20,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 
 	@Override
 	public boolean addDocument(DocumentStr document) throws GenericException {
+		boolean status=true;
 		try {
 			ps = connection
 					.prepareStatement("insert into document(document_id,application_number,aadhar,pan,timestamp) "
@@ -35,11 +36,15 @@ public class DocumentDAOImpl implements DocumentDAO {
 			ps.setBlob(3, aadharBlob);
 			ps.setBlob(4, panBlob);
 			int res = ps.executeUpdate();
+			if(res==0) {
+				status=false;
+				throw new GenericException("failed to add document");
+			}
 
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);
 		}
-		return true;
+		return status;
 	}
 
 	@Override
@@ -61,7 +66,7 @@ public class DocumentDAOImpl implements DocumentDAO {
 	}
 
 	@Override
-	public DocumentBlob getDocumentById(String applicationId) throws GenericException {
+	public DocumentBlob getDocumentByApplicatonNumber(String applicationId) throws GenericException {
 		try {
 			ps = connection.prepareStatement(
 					"select document_id,application_number,aadhar,pan,timestamp from document where application_number=?");

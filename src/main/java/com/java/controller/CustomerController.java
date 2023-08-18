@@ -8,6 +8,7 @@ import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateLoanDTO;
 import com.java.requestdto.CustomerLoginDTO;
+import com.java.requestdto.UpdatePasswordDTO;
 import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.responseentity.Response;
@@ -15,6 +16,7 @@ import com.java.responseentity.Response;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -95,6 +97,19 @@ public class CustomerController {
 			return new Response<CustomerLoginResDTO>(e.getMessage(), 200, customerLoginResDTO);
 		}
 
+	}
+	
+	@PUT
+	@Path("/updateCredentials")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response<Boolean> updateCredentials(UpdatePasswordDTO updatePasswordDTO , @HeaderParam("customerId") String customerId){
+		boolean status = false;
+		try {
+			status = customerServiceImpl.updateCredentials(updatePasswordDTO, customerId);
+			return new Response<Boolean>("updation of password successful", 200, status);
+		} catch (GenericException e) {
+			return new Response<Boolean>(e.getMessage(), 400, status);
+		}
 	}
 
 }

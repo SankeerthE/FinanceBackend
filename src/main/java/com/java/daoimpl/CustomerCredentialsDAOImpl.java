@@ -29,6 +29,8 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 			int res = ps.executeUpdate();
 			if (res == 0) {
 				status = false;
+				throw new GenericException("failed to add credentials");
+
 			}
 		} catch (SQLException e) {
 			status = false;
@@ -38,9 +40,26 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 	}
 
 	@Override
-	public boolean updateCredentials(String customerId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean updateCredentials(String customerId, String oldPassword, String newPassword)
+			throws GenericException {
+		boolean status = true;
+		try {
+			ps = connection
+					.prepareStatement("update customer_credentials set password=? where cust_id=? and password=?");
+			ps.setString(1, newPassword);
+			ps.setString(2, customerId);
+			ps.setString(3, oldPassword);
+			int res = ps.executeUpdate();
+			System.out.println(res);
+			if (res == 0) {
+				status = false;
+				throw new GenericException("incorrect password");
+			}
+		} catch (SQLException e) {
+			throw new GenericException(e.getMessage(), e);
+		}
+
+		return status;
 	}
 
 	@Override
@@ -59,7 +78,7 @@ public class CustomerCredentialsDAOImpl implements CustomerCredentialsDAO {
 			ResultSet res = ps.executeQuery();
 
 			if (res.getFetchSize() == 0) {
-				return null;
+				throw new GenericException("there are no credentials for " + customerId);
 			}
 			while (res.next()) {
 				customerCredentials = new CustomerCredentials(res.getString(1), res.getString(2), res.getString(3));

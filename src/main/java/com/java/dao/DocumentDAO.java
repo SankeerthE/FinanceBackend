@@ -13,5 +13,5 @@ public interface DocumentDAO {
 
 	boolean deleteDocument(String documentId);
 
-	DocumentBlob getDocumentById(String documentId) throws GenericException;
+	DocumentBlob getDocumentByApplicatonNumber(String applicationNumber) throws GenericException;
 }

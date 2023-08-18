@@ -19,7 +19,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	@Override
 	public boolean createCustomer(Customer customer) throws GenericException {
-
+		boolean status=true;
 		try {
 			ps = connection.prepareStatement(
 					"insert into customer(cust_id,cust_name,cust_gender,cust_email,cust_mobile,timestamp) values(?,?,?,?,?,CURRENT_TIMESTAMP)");
@@ -30,13 +30,14 @@ public class CustomerDAOImpl implements CustomerDAO {
 			ps.setString(5, customer.getCustomerMobile());
 			int res = ps.executeUpdate();
 			if(res==0) {
-				return false;
+				status = false;
+				throw new GenericException("failed to create customer");
 			}
 
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);
 		}
-		return true;
+		return status;
 	}
 
 	@Override
@@ -47,18 +48,20 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	@Override
 	public boolean deleteCustomer(String CustomerId) throws GenericException {
+		boolean status=true;
 		
 		try {
 			ps=connection.prepareStatement("delete from customer where cust_id=?");
 			ps.setString(1, CustomerId);
 			int res=ps.executeUpdate();
 			if(res==0) {
-				return false;
+				status = false;
+				throw new GenericException("failed to delete customerId");
 			}
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);
 		}
-		return true;
+		return status;
 	}
 
 	@Override
@@ -90,7 +93,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			ResultSet res = ps.executeQuery();
 
 			if (res.getFetchSize() == 0) {
-				return null;
+				throw new GenericException("failed to get customer");
 			}
 			while (res.next()) {
 				customer = new Customer(res.getString(1), res.getString(2), res.getString(3), res.getString(4),

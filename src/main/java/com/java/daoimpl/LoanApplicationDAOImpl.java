@@ -10,7 +10,6 @@ import com.java.Exceptions.GenericException;
 import com.java.dao.LoanApplicationDAO;
 import com.java.entities.LoanApplication;
 import com.java.jdbcconn.JdbcApp;
-import com.java.utilities.Status;
 
 public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 
@@ -37,6 +36,7 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 
 	@Override
 	public boolean addLoan(LoanApplication loanApplication) throws GenericException {
+		boolean status = true;
 
 		try {
 			ps = connection.prepareStatement(
@@ -51,13 +51,14 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 			ps.setString(7, loanApplication.getStatus());
 			int res = ps.executeUpdate();
 			if (res == 0) {
-				return false;
+				status = false;
+				throw new GenericException("failed to add loan application");
 			}
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);
 		}
 
-		return true;
+		return status;
 	}
 
 	@Override
@@ -68,19 +69,20 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 
 	@Override
 	public boolean updateLoan(String applicationNumber, LoanApplication loanApplication) throws GenericException {
-
+		boolean status = true;
 		try {
 			ps = connection.prepareStatement("update loanapplication set status=? where application_number=?");
 			ps.setString(1, loanApplication.getStatus());
 			ps.setString(2, applicationNumber);
 			int res = ps.executeUpdate();
 			if (res == 0) {
-				return false;
+				status = false;
+				throw new GenericException("failed to update loan");
 			}
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);
 		}
-		return true;
+		return status;
 	}
 
 	@Override
@@ -94,7 +96,7 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 			ResultSet res = ps.executeQuery();
 
 			if (res.getFetchSize() == 0) {
-				return null;
+				throw new GenericException("failed to get loan application");
 			}
 			while (res.next()) {
 				loanApplication = new LoanApplication(res.getString(1), res.getString(2), res.getString(3),
@@ -117,7 +119,7 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 			ResultSet res = ps.executeQuery();
 
 			if (res.getFetchSize() == 0) {
-				return null;
+				throw new GenericException("failed to get loan application for status: " + status);
 			}
 			while (res.next()) {
 				loanApplications.add(new LoanApplication(res.getString(1), res.getString(2), res.getString(3),

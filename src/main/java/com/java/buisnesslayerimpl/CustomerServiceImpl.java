@@ -22,6 +22,7 @@ import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateLoanDTO;
 import com.java.requestdto.CustomerLoginDTO;
+import com.java.requestdto.UpdatePasswordDTO;
 import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.utilities.Status;
@@ -82,7 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
 	public DocumentStr getDocument(String applicationNumber) throws GenericException {
 		DocumentBlob documentBlob = null;
 		try {
-			documentBlob = documentDAOImpl.getDocumentById(applicationNumber);
+			documentBlob = documentDAOImpl.getDocumentByApplicatonNumber(applicationNumber);
 		} catch (GenericException e) {
 			throw e;
 		}
@@ -153,6 +154,21 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 
 		return customerLoginResDTO;
+	}
+
+	@Override
+	public boolean updateCredentials(UpdatePasswordDTO updatePasswordDTO, String customerId) throws GenericException {
+		boolean updationStatus = false;
+		try {
+			updationStatus = customerCredentialsDAOImpl.updateCredentials(customerId,
+					updatePasswordDTO.getOldPassword(), updatePasswordDTO.getNewPassword());
+		} catch (GenericException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
+		}
+
+		return updationStatus;
 	}
 
 }
