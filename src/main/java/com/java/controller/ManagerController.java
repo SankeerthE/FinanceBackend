@@ -3,10 +3,10 @@ package com.java.controller;
 import java.util.ArrayList;
 
 import com.java.Exceptions.GenericException;
-import com.java.buisnesslayerimpl.ManagerServiceImpl;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.ApproveDTO;
 import com.java.responseentity.Response;
+import com.java.servicelayerimpl.LoanApplicationServiceImpl;
 import com.java.utilities.Status;
 
 import jakarta.ws.rs.GET;
@@ -17,7 +17,7 @@ import jakarta.ws.rs.core.MediaType;
 
 @Path("/manager")
 public class ManagerController {
-	ManagerServiceImpl managerServiceImpl = new ManagerServiceImpl();
+	LoanApplicationServiceImpl loanApplicationServiceImpl = new LoanApplicationServiceImpl();
 
 	@GET
 	@Path("/waitingForApproval")
@@ -25,7 +25,7 @@ public class ManagerController {
 	public Response<ArrayList<LoanApplication>> getWaitingForApproval() {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
-			loanApplications = managerServiceImpl.getApplications(Status.INPROGRESS.toString());
+			loanApplications = loanApplicationServiceImpl.getApplications(Status.INPROGRESS.toString());
 			return new Response<ArrayList<LoanApplication>>("feteched waiting for approval applications successfully",
 					200, loanApplications);
 		} catch (GenericException e) {
@@ -39,7 +39,7 @@ public class ManagerController {
 	public Response<ArrayList<LoanApplication>> getApproved() {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
-			loanApplications = managerServiceImpl.getApplications(Status.APPROVED.toString());
+			loanApplications = loanApplicationServiceImpl.getApplications(Status.APPROVED.toString());
 			return new Response<ArrayList<LoanApplication>>("feteched waiting for approval applications successfully",
 					200, loanApplications);
 		} catch (GenericException e) {
@@ -53,7 +53,7 @@ public class ManagerController {
 	public Response<ArrayList<LoanApplication>> getRejected() {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
-			loanApplications = managerServiceImpl.getApplications(Status.REJECTED.toString());
+			loanApplications = loanApplicationServiceImpl.getApplications(Status.REJECTED.toString());
 			return new Response<ArrayList<LoanApplication>>("feteched waiting for approval applications successfully",
 					200, loanApplications);
 		} catch (GenericException e) {
@@ -67,7 +67,7 @@ public class ManagerController {
 	public Response<ArrayList<LoanApplication>> getAllApplications() {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
-			loanApplications = managerServiceImpl.getAllApplications();
+			loanApplications = loanApplicationServiceImpl.getAllApplications();
 			return new Response<ArrayList<LoanApplication>>("retrived all the applications", 200, loanApplications);
 		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
@@ -82,7 +82,7 @@ public class ManagerController {
 	public Response<Boolean> approveApplication(ApproveDTO approveDTO){
 		boolean status=false;
 		try {
-			status=managerServiceImpl.approveApplication(approveDTO);
+			status=loanApplicationServiceImpl.approveApplication(approveDTO);
 			return new Response<Boolean>("application got approved",200,status);
 		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(),400,status);
@@ -95,7 +95,7 @@ public class ManagerController {
 	public Response<Boolean> rejectApplication(ApproveDTO approveDTO){
 		boolean status=false;
 		try {
-			status=managerServiceImpl.rejectApplication(approveDTO);
+			status=loanApplicationServiceImpl.rejectApplication(approveDTO);
 			return new Response<Boolean>("application got rejected",200,status);
 		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(),400,status);

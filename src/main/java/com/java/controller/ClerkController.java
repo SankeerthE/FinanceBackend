@@ -3,12 +3,13 @@ package com.java.controller;
 import java.util.ArrayList;
 
 import com.java.Exceptions.GenericException;
-import com.java.buisnesslayerimpl.ClerkServiceImpl;
 import com.java.entities.Customer;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateCustDTO;
 import com.java.requestdto.CreateLoanDTO;
 import com.java.responseentity.Response;
+import com.java.servicelayerimpl.CustomerServiceImpl;
+import com.java.servicelayerimpl.LoanApplicationServiceImpl;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -19,7 +20,8 @@ import jakarta.ws.rs.core.MediaType;
 
 @Path("/clerk")
 public class ClerkController {
-	ClerkServiceImpl clerkServiceImpl = new ClerkServiceImpl();
+	CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
+	LoanApplicationServiceImpl loanApplicationServiceImpl = new LoanApplicationServiceImpl();
 	
 	@POST
 	@Path("/createCustomer")
@@ -27,7 +29,7 @@ public class ClerkController {
 	public Response<Boolean> createCustomer(CreateCustDTO createCustDTO) {
 		boolean status = false;
 		try {
-			status = clerkServiceImpl.createCustomer(createCustDTO);
+			status = customerServiceImpl.createCustomer(createCustDTO);
 			return new Response<Boolean>("customer created successfully", 200, status);
 		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(), 400, status);
@@ -41,7 +43,7 @@ public class ClerkController {
 	public Response<ArrayList<Customer>> getAllCustomers() {
 		ArrayList<Customer> customers = null;
 		try {
-			customers = clerkServiceImpl.getAllCustomers();
+			customers = customerServiceImpl.getAllCustomers();
 			return new Response<ArrayList<Customer>>("retrived all the customers", 200, customers);
 		} catch (GenericException e) {
 			return new Response<ArrayList<Customer>>(e.getMessage(), 400, customers);
@@ -55,7 +57,7 @@ public class ClerkController {
 	public Response<ArrayList<LoanApplication>> getAllApplications() {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
-			loanApplications = clerkServiceImpl.getAllApplications();
+			loanApplications = loanApplicationServiceImpl.getAllApplications();
 			return new Response<ArrayList<LoanApplication>>("retrived all the applications", 200, loanApplications);
 		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
@@ -70,7 +72,7 @@ public class ClerkController {
 	public Response<Boolean> createLoanApplication(CreateLoanDTO createLoanDTO, @HeaderParam("customerId") String customerId){
 		boolean status = false;
 		try {
-			status = clerkServiceImpl.createLoanApplication(createLoanDTO, customerId);
+			status = loanApplicationServiceImpl.createLoanApplication(createLoanDTO, customerId);
 			return new Response<Boolean>("created loan application", 200, status);
 
 		} catch (GenericException e) {
