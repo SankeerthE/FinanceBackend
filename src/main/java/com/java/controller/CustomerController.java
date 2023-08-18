@@ -3,7 +3,6 @@ package com.java.controller;
 import java.util.ArrayList;
 
 import com.java.Exceptions.GenericException;
-import com.java.buisnesslayerimpl.CustomerServiceImpl;
 import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateLoanDTO;
@@ -12,6 +11,10 @@ import com.java.requestdto.UpdatePasswordDTO;
 import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.responseentity.Response;
+import com.java.servicelayerimpl.CustomerCredentialsServiceImpl;
+import com.java.servicelayerimpl.CustomerServiceImpl;
+import com.java.servicelayerimpl.DocumentServiceImpl;
+import com.java.servicelayerimpl.LoanApplicationServiceImpl;
 
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -25,6 +28,9 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/customer")
 public class CustomerController {
 	CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
+	LoanApplicationServiceImpl loanApplicationServiceImpl = new LoanApplicationServiceImpl();
+	DocumentServiceImpl documentServiceImpl = new DocumentServiceImpl();
+	CustomerCredentialsServiceImpl customerCredentialsServiceImpl = new CustomerCredentialsServiceImpl();
 
 	@POST
 	@Path("/addLoanApplication")
@@ -34,7 +40,7 @@ public class CustomerController {
 
 		boolean status = false;
 		try {
-			status = customerServiceImpl.addLoanApplication(createLoanDTO, customerId);
+			status = loanApplicationServiceImpl.createLoanApplication(createLoanDTO, customerId);
 			return new Response<Boolean>("created loan application", 200, status);
 
 		} catch (GenericException e) {
@@ -49,7 +55,7 @@ public class CustomerController {
 	public Response<ArrayList<LoanApplication>> getMyApplications(@HeaderParam("customerId") String customerId) {
 		ArrayList<LoanApplication> loanApplications;
 		try {
-			loanApplications = customerServiceImpl.getApplicationDetails(customerId);
+			loanApplications = loanApplicationServiceImpl.getApplicationDetails(customerId);
 			return new Response<ArrayList<LoanApplication>>("got data", 200, loanApplications);
 		} catch (GenericException e) {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, null);
@@ -63,7 +69,7 @@ public class CustomerController {
 	public Response<DocumentStr> getDocument(@HeaderParam("applicationId") String applicationId) {
 		DocumentStr documentStr;
 		try {
-			documentStr = customerServiceImpl.getDocument(applicationId);
+			documentStr = documentServiceImpl.getDocument(applicationId);
 			return new Response<DocumentStr>("document retrived", 200, documentStr);
 		} catch (GenericException e) {
 			return new Response<DocumentStr>(e.getMessage(), 400, null);
@@ -92,7 +98,7 @@ public class CustomerController {
 	public Response<CustomerLoginResDTO> verifyLogin(CustomerLoginDTO customerLoginDTO) {
 		CustomerLoginResDTO customerLoginResDTO = null;
 		try {
-			customerLoginResDTO = customerServiceImpl.verifyCredentials(customerLoginDTO);
+			customerLoginResDTO = customerCredentialsServiceImpl.verifyCredentials(customerLoginDTO);
 			return new Response<CustomerLoginResDTO>("correct credentials", 200, customerLoginResDTO);
 		} catch (GenericException e) {
 			return new Response<CustomerLoginResDTO>(e.getMessage(), 200, customerLoginResDTO);
@@ -106,7 +112,7 @@ public class CustomerController {
 	public Response<Boolean> updateCredentials(UpdatePasswordDTO updatePasswordDTO , @HeaderParam("customerId") String customerId){
 		boolean status = false;
 		try {
-			status = customerServiceImpl.updateCredentials(updatePasswordDTO, customerId);
+			status = customerCredentialsServiceImpl.updateCredentials(updatePasswordDTO, customerId);
 			return new Response<Boolean>("updation of password successful", 200, status);
 		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(), 400, status);
@@ -119,7 +125,7 @@ public class CustomerController {
 	public Response<Boolean> withdrawApplication(@HeaderParam("applicationId") String applicationId){
 		boolean status = false;
 		try {
-			status=customerServiceImpl.withdrawLoanApplication(applicationId);
+			status=loanApplicationServiceImpl.withdrawLoanApplication(applicationId);
 			return new Response<Boolean>("application withdrawn successfully",200,status);
 		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(),400,status);

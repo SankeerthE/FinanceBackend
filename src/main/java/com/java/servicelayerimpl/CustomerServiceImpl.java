@@ -1,9 +1,8 @@
-package com.java.buisnesslayerimpl;
+package com.java.servicelayerimpl;
 
 import java.util.ArrayList;
 
 import com.java.Exceptions.GenericException;
-import com.java.buisnesslayer.ClerkService;
 import com.java.daoimpl.AccountDAOImpl;
 import com.java.daoimpl.CustomerCredentialsDAOImpl;
 import com.java.daoimpl.CustomerDAOImpl;
@@ -12,19 +11,38 @@ import com.java.daoimpl.LoanApplicationDAOImpl;
 import com.java.entities.Account;
 import com.java.entities.Customer;
 import com.java.entities.CustomerCredentials;
-import com.java.entities.DocumentStr;
-import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateCustDTO;
-import com.java.requestdto.CreateLoanDTO;
+import com.java.responsedto.ProfileDTO;
+import com.java.servicelayer.CustomerService;
 import com.java.utilities.ServiceUtility;
-import com.java.utilities.Status;
 
-public class ClerkServiceImpl implements ClerkService {
-	CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
-	CustomerCredentialsDAOImpl customerCredentialsDAOImpl = new CustomerCredentialsDAOImpl();
+public class CustomerServiceImpl implements CustomerService {
+
 	LoanApplicationDAOImpl loanApplicationDAOImpl = new LoanApplicationDAOImpl();
-	AccountDAOImpl accountDAOImpl = new AccountDAOImpl();
 	DocumentDAOImpl documentDAOImpl = new DocumentDAOImpl();
+	CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
+	AccountDAOImpl accountDAOImpl = new AccountDAOImpl();
+	CustomerCredentialsDAOImpl customerCredentialsDAOImpl = new CustomerCredentialsDAOImpl();
+
+	@Override
+	public ProfileDTO getMyProfile(String customerId) throws GenericException {
+		Account account = null;
+		Customer customer = null;
+		try {
+			account = accountDAOImpl.getAccountById(customerId);
+			customer = customerDAOImpl.getCustomerById(customerId);
+
+		} catch (GenericException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
+		}
+
+		ProfileDTO profileDTO = new ProfileDTO(customer.getCustomerName(), customer.getCustomerGender(),
+				customer.getCustomerEmail(), customer.getCustomerMobile(), account.getAccountNumber(),
+				account.getBalance());
+		return profileDTO;
+	}
 
 	@Override
 	public boolean createCustomer(CreateCustDTO createCustDTO) throws GenericException {
@@ -56,7 +74,6 @@ public class ClerkServiceImpl implements ClerkService {
 			throw new GenericException(e.getMessage(), e);
 		}
 		return status;
-
 	}
 
 	@Override
@@ -66,45 +83,9 @@ public class ClerkServiceImpl implements ClerkService {
 			return customers;
 		} catch (GenericException e) {
 			throw new GenericException(e.getMessage(), e);
-		}
-	}
-
-	@Override
-	public ArrayList<LoanApplication> getAllApplications() throws GenericException {
-		try {
-			ArrayList<LoanApplication> loanApplications = loanApplicationDAOImpl.getAllApplications();
-			return loanApplications;
-		} catch (GenericException e) {
-			throw e;
 		} catch (Exception e) {
 			throw new GenericException(e.getMessage(), e);
 		}
-	}
-
-	@Override
-	public boolean createLoanApplication(CreateLoanDTO createLoanDTO, String CustomerId) throws GenericException {
-
-		String applicationId = ServiceUtility.generateId("APP");
-
-		LoanApplication loanApplication = new LoanApplication(applicationId, CustomerId, createLoanDTO.getLoan_id(),
-				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), Status.INPROGRESS.name(),
-				null);
-
-		String documentId = ServiceUtility.generateId("DOC");
-		DocumentStr document = new DocumentStr(documentId, applicationId, createLoanDTO.getAadhar(),
-				createLoanDTO.getPan(), null);
-		boolean status = true;
-		try {
-			loanApplicationDAOImpl.addLoan(loanApplication);
-			documentDAOImpl.addDocument(document);
-		} catch (GenericException e) {
-			status = false;
-			throw e;
-		} catch (Exception e) {
-			throw new GenericException(e.getMessage(), e);
-		}
-
-		return status;
 	}
 
 }
