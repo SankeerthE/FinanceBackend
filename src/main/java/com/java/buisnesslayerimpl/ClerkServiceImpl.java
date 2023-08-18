@@ -16,6 +16,7 @@ import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.CreateCustDTO;
 import com.java.requestdto.CreateLoanDTO;
+import com.java.utilities.ServiceUtility;
 import com.java.utilities.Status;
 
 public class ClerkServiceImpl implements ClerkService {
@@ -27,10 +28,7 @@ public class ClerkServiceImpl implements ClerkService {
 
 	@Override
 	public boolean createCustomer(CreateCustDTO createCustDTO) throws GenericException {
-		// TODO Auto-generated method stub\
-		long timestamp = System.currentTimeMillis();
-		int randomNumber = (int) (Math.random() * 100000);
-		String customerId = "CUST" + timestamp + "-" + randomNumber;
+		String customerId = ServiceUtility.generateId("CUST");
 
 		Customer customer = new Customer(customerId, createCustDTO.getCustomerName(), createCustDTO.getCustomerGender(),
 				createCustDTO.getCustomerEmail(), createCustDTO.getCustomerMobile(), null);
@@ -38,9 +36,7 @@ public class ClerkServiceImpl implements ClerkService {
 				createCustDTO.getPassword());
 
 		// creating account for new user
-		timestamp = System.currentTimeMillis();
-		randomNumber = (int) (Math.random() * 100000);
-		String accountNumber = "ACC" + timestamp + "-" + randomNumber;
+		String accountNumber = ServiceUtility.generateId("ACC");
 		Account account = new Account(accountNumber, customerId, 0, null);
 
 		boolean addCredentialsStatus = false;
@@ -80,22 +76,21 @@ public class ClerkServiceImpl implements ClerkService {
 			return loanApplications;
 		} catch (GenericException e) {
 			throw e;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			throw new GenericException(e.getMessage(), e);
 		}
 	}
 
 	@Override
 	public boolean createLoanApplication(CreateLoanDTO createLoanDTO, String CustomerId) throws GenericException {
-		long timestamp = System.currentTimeMillis();
-		int randomNumber = (int) (Math.random() * 100000);
-		String applicationId = "APP" + timestamp + "-" + randomNumber;
+
+		String applicationId = ServiceUtility.generateId("APP");
 
 		LoanApplication loanApplication = new LoanApplication(applicationId, CustomerId, createLoanDTO.getLoan_id(),
 				createLoanDTO.getAmount(), createLoanDTO.getTenure(), createLoanDTO.getEmi(), Status.INPROGRESS.name(),
 				null);
 
-		String documentId = "DOC" + timestamp + "-" + randomNumber;
+		String documentId = ServiceUtility.generateId("DOC");
 		DocumentStr document = new DocumentStr(documentId, applicationId, createLoanDTO.getAadhar(),
 				createLoanDTO.getPan(), null);
 		boolean status = true;
@@ -105,7 +100,7 @@ public class ClerkServiceImpl implements ClerkService {
 		} catch (GenericException e) {
 			status = false;
 			throw e;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			throw new GenericException(e.getMessage(), e);
 		}
 
