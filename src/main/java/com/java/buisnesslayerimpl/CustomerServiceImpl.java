@@ -171,4 +171,33 @@ public class CustomerServiceImpl implements CustomerService {
 		return updationStatus;
 	}
 
+	@Override
+	public boolean withdrawLoanApplication(String applicationNumber) throws GenericException {
+		boolean deletionStatus = false;
+		try {
+			LoanApplication loanApplication = loanApplicationDAOImpl.getLoanApplicationById(applicationNumber);
+			String loanStatus = loanApplication.getStatus();
+			if (loanStatus.equals(Status.INPROGRESS.name())) {
+				deletionStatus = documentDAOImpl.deleteDocument(applicationNumber);
+				if (deletionStatus) {
+					deletionStatus = loanApplicationDAOImpl.deleteLoan(applicationNumber);
+					if (!deletionStatus) {
+						throw new GenericException("failed to delete loan application");
+					}
+				} else {
+					throw new GenericException("failed to delete document");
+				}
+			}
+			else {
+				throw new GenericException("applicaiton has been approved or rejected");
+			}
+
+		} catch (GenericException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
+		}
+		return deletionStatus;
+	}
+
 }

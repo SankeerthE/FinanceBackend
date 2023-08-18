@@ -60,9 +60,20 @@ public class DocumentDAOImpl implements DocumentDAO {
 	}
 
 	@Override
-	public boolean deleteDocument(String documentId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deleteDocument(String applicationNumber) throws GenericException {
+		boolean status=true;
+		try {
+			ps=connection.prepareStatement("delete from document where application_number=?");
+			ps.setString(1, applicationNumber);
+			int res=ps.executeUpdate();
+			if(res==0) {
+				status=false;
+				throw new GenericException("failed to delete document");
+			}
+		} catch (SQLException e) {
+			throw new GenericException(e.getMessage(),e);
+		}
+		return status;
 	}
 
 	@Override

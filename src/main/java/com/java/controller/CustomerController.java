@@ -13,6 +13,7 @@ import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.responseentity.Response;
 
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
@@ -109,6 +110,19 @@ public class CustomerController {
 			return new Response<Boolean>("updation of password successful", 200, status);
 		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(), 400, status);
+		}
+	}
+	
+	@DELETE
+	@Path("/withdrawApplication")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response<Boolean> withdrawApplication(@HeaderParam("applicationId") String applicationId){
+		boolean status = false;
+		try {
+			status=customerServiceImpl.withdrawLoanApplication(applicationId);
+			return new Response<Boolean>("application withdrawn successfully",200,status);
+		} catch (GenericException e) {
+			return new Response<Boolean>(e.getMessage(),400,status);
 		}
 	}
 

@@ -23,4 +23,6 @@ public interface CustomerService {
 	CustomerLoginResDTO verifyCredentials(CustomerLoginDTO customerLoginDTO) throws GenericException;
 
 	boolean updateCredentials(UpdatePasswordDTO updatePasswordDTO , String customerId) throws GenericException;
+	
+	boolean withdrawLoanApplication(String applicationNumber) throws GenericException;
 }

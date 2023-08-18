@@ -62,9 +62,20 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 	}
 
 	@Override
-	public boolean deleteLoan(String applicationNumber) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deleteLoan(String applicationNumber) throws GenericException {
+		boolean status=true;
+		try {
+			ps=connection.prepareStatement("delete from loanapplication where application_number=?");
+			ps.setString(1, applicationNumber);
+			int res = ps.executeUpdate();
+			if(res==0) {
+				status = false;
+				throw new GenericException("failed to delete loan application");
+			}
+		} catch (SQLException e) {
+			throw new GenericException(e.getMessage(),e);
+		}
+		return status;
 	}
 
 	@Override
