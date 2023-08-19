@@ -40,14 +40,33 @@ public class AuthenticationEndpoint {
             String token = issueToken(username);
 
             // Return the token on the response
-            return Response.ok(token).build();
+            String id=getId(username);
+        	
+            return Response.ok(token+":"+id).build();
 
         } catch (Exception e) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }      
     }
     
-    @DELETE
+    private String getId(String username) throws Exception{
+    	
+    	JdbcApp jdbc = new JdbcApp();
+    	Connection connection = jdbc.getConnection();
+    	PreparedStatement ps = jdbc.getPs();
+    	
+    	ps=connection.prepareStatement("select cust_id,cust_name,cust_gender,cust_email,cust_mobile,timestamp from customer where cust_email=?");
+    	ps.setString(1, username);
+    	ResultSet res=ps.executeQuery();
+    	
+    	String id=null;
+		while(res.next()) {
+			id=res.getString(1);
+		}
+		return id;
+	}
+
+	@DELETE
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
