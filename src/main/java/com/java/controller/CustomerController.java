@@ -69,7 +69,7 @@ public class CustomerController {
 	}
 
 	@GET
-	@Secured({ Role.CUSTOMER })
+	@Secured({ Role.CUSTOMER, Role.CLERK, Role.MANAGER })
 	@Path("/getDocument")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response<DocumentStr> getDocument(@HeaderParam("applicationId") String applicationId,
