@@ -17,6 +17,6 @@ public class CorsFilter implements ContainerResponseFilter {
 		responseContext.getHeaders().add("Access-Control-Allow-Origin", "http://127.0.0.1:5501");
 		responseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 		responseContext.getHeaders().add("Access-Control-Allow-Headers",
-				"Content-Type, customerId, applicationId,role");
+				"Content-Type, customerId, applicationId,role, Authorization");
 	}
 }
