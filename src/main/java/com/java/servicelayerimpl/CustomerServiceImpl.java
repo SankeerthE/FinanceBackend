@@ -4,17 +4,18 @@ import java.util.ArrayList;
 
 import com.java.Exceptions.GenericException;
 import com.java.daoimpl.AccountDAOImpl;
-import com.java.daoimpl.CustomerCredentialsDAOImpl;
+import com.java.daoimpl.CredentialsDAOImpl;
 import com.java.daoimpl.CustomerDAOImpl;
 import com.java.daoimpl.DocumentDAOImpl;
 import com.java.daoimpl.LoanApplicationDAOImpl;
 import com.java.entities.Account;
+import com.java.entities.Credentials;
 import com.java.entities.Customer;
-import com.java.entities.CustomerCredentials;
 import com.java.requestdto.CreateCustDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.servicelayer.CustomerService;
 import com.java.utilities.ServiceUtility;
+import com.java.utilities.daoutilities.Role;
 
 public class CustomerServiceImpl implements CustomerService {
 
@@ -22,7 +23,8 @@ public class CustomerServiceImpl implements CustomerService {
 	DocumentDAOImpl documentDAOImpl = new DocumentDAOImpl();
 	CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
 	AccountDAOImpl accountDAOImpl = new AccountDAOImpl();
-	CustomerCredentialsDAOImpl customerCredentialsDAOImpl = new CustomerCredentialsDAOImpl();
+//	CustomerCredentialsDAOImpl customerCredentialsDAOImpl = new CustomerCredentialsDAOImpl();
+	CredentialsDAOImpl credentialsDAOImpl = new CredentialsDAOImpl();
 
 	@Override
 	public ProfileDTO getMyProfile(String customerId) throws GenericException {
@@ -50,8 +52,8 @@ public class CustomerServiceImpl implements CustomerService {
 
 		Customer customer = new Customer(customerId, createCustDTO.getCustomerName(), createCustDTO.getCustomerGender(),
 				createCustDTO.getCustomerEmail(), createCustDTO.getCustomerMobile(), null);
-		CustomerCredentials customerCredentials = new CustomerCredentials(customerId, createCustDTO.getUserName(),
-				createCustDTO.getPassword());
+		Credentials credentials = new Credentials(createCustDTO.getUserName(),
+				createCustDTO.getPassword(), Role.CUSTOMER.name());
 
 		// creating account for new user
 		String accountNumber = ServiceUtility.generateId("ACC");
@@ -60,14 +62,22 @@ public class CustomerServiceImpl implements CustomerService {
 		boolean addCredentialsStatus = false;
 		boolean status = true;
 		try {
-			customerDAOImpl.createCustomer(customer);
-			addCredentialsStatus = customerCredentialsDAOImpl.addCredentials(customerCredentials);
-			accountDAOImpl.createAccount(account);
+			boolean createCustomerstatus = customerDAOImpl.createCustomer(customer);
+			System.out.println(createCustomerstatus);
+			if(!createCustomerstatus) {
+				throw new GenericException("failed to create customer mail"+createCustDTO.getCustomerEmail()+"already exists");
+			}
+			
+			addCredentialsStatus = credentialsDAOImpl.addCredentials(credentials);
+			System.out.println(addCredentialsStatus);
 
-		} catch (GenericException e) {
 			if (!addCredentialsStatus) {
 				customerDAOImpl.deleteCustomer(customerId);
 			}
+			accountDAOImpl.createAccount(account);
+
+		} catch (GenericException e) {
+			
 			status = false;
 			throw e;
 		} catch (Exception e) {

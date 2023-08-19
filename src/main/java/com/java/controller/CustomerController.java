@@ -11,10 +11,12 @@ import com.java.requestdto.UpdatePasswordDTO;
 import com.java.responsedto.CustomerLoginResDTO;
 import com.java.responsedto.ProfileDTO;
 import com.java.responseentity.Response;
-import com.java.servicelayerimpl.CustomerCredentialsServiceImpl;
+import com.java.servicelayerimpl.CredentialsServiceImpl;
 import com.java.servicelayerimpl.CustomerServiceImpl;
 import com.java.servicelayerimpl.DocumentServiceImpl;
 import com.java.servicelayerimpl.LoanApplicationServiceImpl;
+import com.java.utilities.Secured;
+import com.java.utilities.daoutilities.Role;
 
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -30,13 +32,14 @@ public class CustomerController {
 	CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
 	LoanApplicationServiceImpl loanApplicationServiceImpl = new LoanApplicationServiceImpl();
 	DocumentServiceImpl documentServiceImpl = new DocumentServiceImpl();
-	CustomerCredentialsServiceImpl customerCredentialsServiceImpl = new CustomerCredentialsServiceImpl();
+	CredentialsServiceImpl credentialsServiceImpl = new CredentialsServiceImpl();
 
 	@POST
+	@Secured({ Role.CUSTOMER })
 	@Path("/addLoanApplication")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response<Boolean> addLoanApplication(CreateLoanDTO createLoanDTO,
-			@HeaderParam("customerId") String customerId) {
+			@HeaderParam("customerId") String customerId, @HeaderParam("role") String role) {
 
 		boolean status = false;
 		try {
@@ -50,9 +53,11 @@ public class CustomerController {
 	}
 
 	@GET
+	@Secured({ Role.CUSTOMER })
 	@Path("/getMyApplications")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<LoanApplication>> getMyApplications(@HeaderParam("customerId") String customerId) {
+	public Response<ArrayList<LoanApplication>> getMyApplications(@HeaderParam("customerId") String customerId,
+			@HeaderParam("role") String role) {
 		ArrayList<LoanApplication> loanApplications;
 		try {
 			loanApplications = loanApplicationServiceImpl.getApplicationDetails(customerId);
@@ -64,9 +69,11 @@ public class CustomerController {
 	}
 
 	@GET
+	@Secured({ Role.CUSTOMER })
 	@Path("/getDocument")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<DocumentStr> getDocument(@HeaderParam("applicationId") String applicationId) {
+	public Response<DocumentStr> getDocument(@HeaderParam("applicationId") String applicationId,
+			@HeaderParam("role") String role) {
 		DocumentStr documentStr;
 		try {
 			documentStr = documentServiceImpl.getDocument(applicationId);
@@ -78,9 +85,11 @@ public class CustomerController {
 	}
 
 	@GET
+	@Secured({ Role.CUSTOMER })
 	@Path("/getMyProfile")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ProfileDTO> getMyProfile(@HeaderParam("customerId") String customerId) {
+	public Response<ProfileDTO> getMyProfile(@HeaderParam("customerId") String customerId,
+			@HeaderParam("role") String role) {
 		ProfileDTO profileDTO = null;
 		try {
 			profileDTO = customerServiceImpl.getMyProfile(customerId);
@@ -93,42 +102,48 @@ public class CustomerController {
 	}
 
 	@POST
+	@Secured({ Role.CUSTOMER })
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<CustomerLoginResDTO> verifyLogin(CustomerLoginDTO customerLoginDTO) {
+	public Response<CustomerLoginResDTO> verifyLogin(CustomerLoginDTO customerLoginDTO,
+			@HeaderParam("role") String role) {
 		CustomerLoginResDTO customerLoginResDTO = null;
 		try {
-			customerLoginResDTO = customerCredentialsServiceImpl.verifyCredentials(customerLoginDTO);
+			customerLoginResDTO = credentialsServiceImpl.verifyCredentials(customerLoginDTO);
 			return new Response<CustomerLoginResDTO>("correct credentials", 200, customerLoginResDTO);
 		} catch (GenericException e) {
 			return new Response<CustomerLoginResDTO>(e.getMessage(), 200, customerLoginResDTO);
 		}
 
 	}
-	
+
 	@PUT
+	@Secured({ Role.CUSTOMER })
 	@Path("/updateCredentials")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<Boolean> updateCredentials(UpdatePasswordDTO updatePasswordDTO , @HeaderParam("customerId") String customerId){
+	public Response<Boolean> updateCredentials(UpdatePasswordDTO updatePasswordDTO,
+			@HeaderParam("customerId") String customerId, @HeaderParam("role") String role) {
 		boolean status = false;
 		try {
-			status = customerCredentialsServiceImpl.updateCredentials(updatePasswordDTO, customerId);
+			status = credentialsServiceImpl.updateCredentials(updatePasswordDTO, customerId);
 			return new Response<Boolean>("updation of password successful", 200, status);
 		} catch (GenericException e) {
 			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 	}
-	
+
 	@DELETE
+	@Secured({ Role.CUSTOMER })
 	@Path("/withdrawApplication")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<Boolean> withdrawApplication(@HeaderParam("applicationId") String applicationId){
+	public Response<Boolean> withdrawApplication(@HeaderParam("applicationId") String applicationId,
+			@HeaderParam("role") String role) {
 		boolean status = false;
 		try {
-			status=loanApplicationServiceImpl.withdrawLoanApplication(applicationId);
-			return new Response<Boolean>("application withdrawn successfully",200,status);
+			status = loanApplicationServiceImpl.withdrawLoanApplication(applicationId);
+			return new Response<Boolean>("application withdrawn successfully", 200, status);
 		} catch (GenericException e) {
-			return new Response<Boolean>(e.getMessage(),400,status);
+			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 	}
 

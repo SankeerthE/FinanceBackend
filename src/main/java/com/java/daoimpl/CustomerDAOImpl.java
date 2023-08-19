@@ -19,7 +19,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	@Override
 	public boolean createCustomer(Customer customer) throws GenericException {
-		boolean status=true;
+		boolean status=false;
 		try {
 			ps = connection.prepareStatement(
 					"insert into customer(cust_id,cust_name,cust_gender,cust_email,cust_mobile,timestamp) values(?,?,?,?,?,CURRENT_TIMESTAMP)");
@@ -30,9 +30,9 @@ public class CustomerDAOImpl implements CustomerDAO {
 			ps.setString(5, customer.getCustomerMobile());
 			int res = ps.executeUpdate();
 			if(res==0) {
-				status = false;
 				throw new GenericException("failed to create customer");
 			}
+			status = true;
 
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);

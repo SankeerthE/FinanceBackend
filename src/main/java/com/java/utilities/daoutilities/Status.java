@@ -1,4 +1,4 @@
-package com.java.utilities;
+package com.java.utilities.daoutilities;
 
 public enum Status {
 	INPROGRESS,

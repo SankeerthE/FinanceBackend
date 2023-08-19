@@ -10,6 +10,8 @@ import com.java.requestdto.CreateLoanDTO;
 import com.java.responseentity.Response;
 import com.java.servicelayerimpl.CustomerServiceImpl;
 import com.java.servicelayerimpl.LoanApplicationServiceImpl;
+import com.java.utilities.Secured;
+import com.java.utilities.daoutilities.Role;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -22,11 +24,12 @@ import jakarta.ws.rs.core.MediaType;
 public class ClerkController {
 	CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
 	LoanApplicationServiceImpl loanApplicationServiceImpl = new LoanApplicationServiceImpl();
-	
+
 	@POST
+	@Secured({ Role.CLERK })
 	@Path("/createCustomer")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<Boolean> createCustomer(CreateCustDTO createCustDTO) {
+	public Response<Boolean> createCustomer(CreateCustDTO createCustDTO, @HeaderParam("role") String role) {
 		boolean status = false;
 		try {
 			status = customerServiceImpl.createCustomer(createCustDTO);
@@ -38,9 +41,10 @@ public class ClerkController {
 	}
 
 	@GET
+	@Secured({ Role.CLERK })
 	@Path("/getAllCustomers")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<Customer>> getAllCustomers() {
+	public Response<ArrayList<Customer>> getAllCustomers(@HeaderParam("role") String role) {
 		ArrayList<Customer> customers = null;
 		try {
 			customers = customerServiceImpl.getAllCustomers();
@@ -52,9 +56,10 @@ public class ClerkController {
 	}
 
 	@GET
+	@Secured({ Role.CLERK })
 	@Path("/getAllApplicaitons")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<LoanApplication>> getAllApplications() {
+	public Response<ArrayList<LoanApplication>> getAllApplications(@HeaderParam("role") String role) {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
 			loanApplications = loanApplicationServiceImpl.getAllApplications();
@@ -63,13 +68,15 @@ public class ClerkController {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
 
 		}
-		
+
 	}
-	
+
 	@POST
+	@Secured({ Role.CLERK })
 	@Path("/createLoanApplication")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<Boolean> createLoanApplication(CreateLoanDTO createLoanDTO, @HeaderParam("customerId") String customerId){
+	public Response<Boolean> createLoanApplication(CreateLoanDTO createLoanDTO,
+			@HeaderParam("customerId") String customerId, @HeaderParam("role") String role) {
 		boolean status = false;
 		try {
 			status = loanApplicationServiceImpl.createLoanApplication(createLoanDTO, customerId);

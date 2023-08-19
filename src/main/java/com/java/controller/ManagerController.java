@@ -7,9 +7,12 @@ import com.java.entities.LoanApplication;
 import com.java.requestdto.ApproveDTO;
 import com.java.responseentity.Response;
 import com.java.servicelayerimpl.LoanApplicationServiceImpl;
-import com.java.utilities.Status;
+import com.java.utilities.Secured;
+import com.java.utilities.daoutilities.Role;
+import com.java.utilities.daoutilities.Status;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -20,9 +23,10 @@ public class ManagerController {
 	LoanApplicationServiceImpl loanApplicationServiceImpl = new LoanApplicationServiceImpl();
 
 	@GET
+	@Secured({ Role.MANAGER })
 	@Path("/waitingForApproval")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<LoanApplication>> getWaitingForApproval() {
+	public Response<ArrayList<LoanApplication>> getWaitingForApproval(@HeaderParam("role") String role) {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
 			loanApplications = loanApplicationServiceImpl.getApplications(Status.INPROGRESS.toString());
@@ -34,9 +38,10 @@ public class ManagerController {
 	}
 
 	@GET
+	@Secured({ Role.MANAGER })
 	@Path("/getApproved")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<LoanApplication>> getApproved() {
+	public Response<ArrayList<LoanApplication>> getApproved(@HeaderParam("role") String role) {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
 			loanApplications = loanApplicationServiceImpl.getApplications(Status.APPROVED.toString());
@@ -48,9 +53,10 @@ public class ManagerController {
 	}
 
 	@GET
+	@Secured({ Role.MANAGER })
 	@Path("/getRejected")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<LoanApplication>> getRejected() {
+	public Response<ArrayList<LoanApplication>> getRejected(@HeaderParam("role") String role) {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
 			loanApplications = loanApplicationServiceImpl.getApplications(Status.REJECTED.toString());
@@ -60,11 +66,12 @@ public class ManagerController {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
 		}
 	}
-	
+
 	@GET
+	@Secured({ Role.MANAGER })
 	@Path("/getAllApplicaitons")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<ArrayList<LoanApplication>> getAllApplications() {
+	public Response<ArrayList<LoanApplication>> getAllApplications(@HeaderParam("role") String role) {
 		ArrayList<LoanApplication> loanApplications = null;
 		try {
 			loanApplications = loanApplicationServiceImpl.getAllApplications();
@@ -73,34 +80,35 @@ public class ManagerController {
 			return new Response<ArrayList<LoanApplication>>(e.getMessage(), 400, loanApplications);
 
 		}
-		
+
 	}
-	
+
 	@POST
+	@Secured({ Role.MANAGER })
 	@Path("/onApprove")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<Boolean> approveApplication(ApproveDTO approveDTO){
-		boolean status=false;
+	public Response<Boolean> approveApplication(ApproveDTO approveDTO, @HeaderParam("role") String role) {
+		boolean status = false;
 		try {
-			status=loanApplicationServiceImpl.approveApplication(approveDTO);
-			return new Response<Boolean>("application got approved",200,status);
+			status = loanApplicationServiceImpl.approveApplication(approveDTO);
+			return new Response<Boolean>("application got approved", 200, status);
 		} catch (GenericException e) {
-			return new Response<Boolean>(e.getMessage(),400,status);
+			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 	}
-	
+
 	@POST
+	@Secured({ Role.MANAGER })
 	@Path("/onReject")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response<Boolean> rejectApplication(ApproveDTO approveDTO){
-		boolean status=false;
+	public Response<Boolean> rejectApplication(ApproveDTO approveDTO, @HeaderParam("role") String role) {
+		boolean status = false;
 		try {
-			status=loanApplicationServiceImpl.rejectApplication(approveDTO);
-			return new Response<Boolean>("application got rejected",200,status);
+			status = loanApplicationServiceImpl.rejectApplication(approveDTO);
+			return new Response<Boolean>("application got rejected", 200, status);
 		} catch (GenericException e) {
-			return new Response<Boolean>(e.getMessage(),400,status);
+			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 	}
-	
 
 }

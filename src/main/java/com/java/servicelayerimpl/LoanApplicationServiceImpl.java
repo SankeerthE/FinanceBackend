@@ -14,7 +14,7 @@ import com.java.requestdto.ApproveDTO;
 import com.java.requestdto.CreateLoanDTO;
 import com.java.servicelayer.LoanApplicationService;
 import com.java.utilities.ServiceUtility;
-import com.java.utilities.Status;
+import com.java.utilities.daoutilities.Status;
 
 public class LoanApplicationServiceImpl implements LoanApplicationService {
 
