@@ -117,6 +117,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 			Account account = accountDAOImpl.getAccountById(approveDTO.getCustomerId());
 			account.setBalance(account.getBalance() + loanApplication.getAmount());
 			accountDAOImpl.updateAccount(account.getAccountNumber(), account);
+			//sending email
+			
 		} catch (GenericException e) {
 			status = false;
 			throw e;
