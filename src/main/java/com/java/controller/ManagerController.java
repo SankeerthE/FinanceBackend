@@ -110,10 +110,19 @@ public class ManagerController {
 			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 	}
-	
-//	@GET
-//	@Path("tickleEmi")
-//	@Produces(MediaType.APPLICATION_JSON)
 
+	@GET
+	@Secured({ Role.MANAGER })
+	@Path("/tickleEmi")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response<Boolean> tickleEmi(@HeaderParam("role") String role) {
+		boolean status = false;
+		try {
+			status = loanApplicationServiceImpl.tickleEmi();
+			return new Response<Boolean>("successfully deducted emi's", 200, status);
+		} catch (GenericException e) {
+			return new Response<Boolean>("failed to deduct emi's", 400, status);
+		}
+	}
 
 }
