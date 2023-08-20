@@ -48,10 +48,11 @@ public class CredentialsServiceImpl implements CredentialsService {
 	}
 
 	@Override
-	public boolean updateCredentials(UpdatePasswordDTO updatePasswordDTO, String username) throws GenericException {
+	public boolean updateCredentials(UpdatePasswordDTO updatePasswordDTO, String customerId) throws GenericException {
 		boolean updationStatus = false;
 		try {
-			updationStatus = credentialsDAOImpl.updateCredentials(username,
+			Customer customer = customerDAOImpl.getCustomerById(customerId);
+			updationStatus = credentialsDAOImpl.updateCredentials(customer.getCustomerEmail(),
 					updatePasswordDTO.getOldPassword(), updatePasswordDTO.getNewPassword());
 		} catch (GenericException e) {
 			throw e;

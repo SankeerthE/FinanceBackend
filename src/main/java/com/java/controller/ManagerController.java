@@ -110,5 +110,10 @@ public class ManagerController {
 			return new Response<Boolean>(e.getMessage(), 400, status);
 		}
 	}
+	
+//	@GET
+//	@Path("tickleEmi")
+//	@Produces(MediaType.APPLICATION_JSON)
+
 
 }
