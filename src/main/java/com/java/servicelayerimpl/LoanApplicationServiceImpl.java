@@ -22,7 +22,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	DocumentDAOImpl documentDAOImpl = new DocumentDAOImpl();
 	AccountDAOImpl accountDAOImpl = new AccountDAOImpl();
 
-
 	@Override
 	public ArrayList<LoanApplication> getAllApplications() throws GenericException {
 		try {
@@ -117,8 +116,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 			Account account = accountDAOImpl.getAccountById(approveDTO.getCustomerId());
 			account.setBalance(account.getBalance() + loanApplication.getAmount());
 			accountDAOImpl.updateAccount(account.getAccountNumber(), account);
-			//sending email
-			
+			// sending email
+
 		} catch (GenericException e) {
 			status = false;
 			throw e;
@@ -160,6 +159,28 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 		}
 
 		return loanApplications;
+	}
+
+	@Override
+	public boolean tickleEmi() throws GenericException {
+		boolean status=false;
+
+		ArrayList<LoanApplication> loanApplications;
+		try {
+			loanApplications = loanApplicationDAOImpl.getLoanApplicationByStatus(Status.APPROVED.name());
+			for (LoanApplication loanApplication : loanApplications) {
+				status=false;
+				Account account = accountDAOImpl.getAccountById(loanApplication.getCust_id());
+				account.setBalance(account.getBalance() - loanApplication.getEmi());
+				accountDAOImpl.updateAccount(account.getAccountNumber(), account);
+				status=true;
+			}
+		} catch (GenericException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new GenericException(e.getMessage(), e);
+		}
+		return status;
 	}
 
 }

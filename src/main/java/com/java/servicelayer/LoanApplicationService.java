@@ -22,7 +22,7 @@ public interface LoanApplicationService {
 
 	ArrayList<LoanApplication> getApplications(String status) throws GenericException;
 	
-//	boolean tickle
+	boolean tickleEmi() throws GenericException;
 
 
 }
