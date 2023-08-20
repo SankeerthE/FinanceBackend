@@ -21,6 +21,8 @@ public interface LoanApplicationService {
 	boolean rejectApplication(ApproveDTO approveDTO) throws GenericException;
 
 	ArrayList<LoanApplication> getApplications(String status) throws GenericException;
+	
+//	boolean tickle
 
 
 }

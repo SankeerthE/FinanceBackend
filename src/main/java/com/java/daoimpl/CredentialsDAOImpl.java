@@ -46,7 +46,7 @@ public class CredentialsDAOImpl implements CredentialsDAO {
 			ps.setString(2, username);
 			ps.setString(3, oldPassword);
 			int res = ps.executeUpdate();
-			System.out.println(res);
+//			System.out.println(res+" "+username+" "+oldPassword+" "+newPassword);
 			if (res == 0) {
 				status = false;
 				throw new GenericException("incorrect password");
