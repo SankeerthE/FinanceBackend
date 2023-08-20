@@ -54,6 +54,9 @@ public class CredentialsServiceImpl implements CredentialsService {
 			Customer customer = customerDAOImpl.getCustomerById(customerId);
 			updationStatus = credentialsDAOImpl.updateCredentials(customer.getCustomerEmail(),
 					updatePasswordDTO.getOldPassword(), updatePasswordDTO.getNewPassword());
+			if(updatePasswordDTO.getOldPassword().equals(updatePasswordDTO.getNewPassword())) {
+				throw new GenericException("New password cannot be same as Old password");
+			}
 		} catch (GenericException e) {
 			throw e;
 		} catch (Exception e) {
