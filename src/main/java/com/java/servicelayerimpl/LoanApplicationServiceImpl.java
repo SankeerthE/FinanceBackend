@@ -62,6 +62,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 			status = false;
 			throw e;
 		} catch (Exception e) {
+			status=false;
 			throw new GenericException(e.getMessage(), e);
 		}
 
