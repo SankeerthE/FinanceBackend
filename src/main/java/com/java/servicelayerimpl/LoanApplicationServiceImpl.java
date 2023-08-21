@@ -1,7 +1,16 @@
 package com.java.servicelayerimpl;
 
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.stream.Collectors;
+
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.Message;
+import javax.mail.MessagingException;
 
 import com.java.Exceptions.GenericException;
 import com.java.daoimpl.AccountDAOImpl;
@@ -117,7 +126,39 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 			account.setBalance(account.getBalance() + loanApplication.getAmount());
 			accountDAOImpl.updateAccount(account.getAccountNumber(), account);
 			// sending email
+//			sendEmail("sankeerthmeda@gmail.com", "hello", "body");
+			String host = "smtp.gmail.com";
+            final String username = "manishssssskumaraaaaa@gmail.com"; // Replace with your Gmail email
+            final String password = "osbzpdwcdbexonng"; // Replace with your Gmail password
 
+//			final String username="sankeerthmeda2903@gmail.com";
+//			final String password = "Sankeerthmeda@2903";
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.host", host);
+            props.put("mail.smtp.socketFactory.port", "465"); //SSL Port
+    		props.put("mail.smtp.socketFactory.class",
+    				"javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
+    		props.put("mail.smtp.auth", "true"); //Enabling SMTP Authentication
+    		props.put("mail.smtp.port", "465"); //SMTP Port
+            Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+            
+            //session.setDebug(true);
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("sankeerthmeda@gmail.com"));
+            message.setSubject("New Login Credentials");
+            message.setText("Hello user your application:"+approveDTO.getApplicationNumber()+", got APPROVED");
+            
+//            UserCredentialsDataAccess ucdao = new UserCredentialsDataAccess();
+//			Boolean flag = ucdao.update(userCredentials.getUsername(), userCredentials.getPassword(), loginpassword, 0);
+			Transport.send(message);
+            System.out.println("Email sent successfully.");
 		} catch (GenericException e) {
 			status = false;
 			throw e;
@@ -182,5 +223,36 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 		}
 		return status;
 	}
+	
+	public void sendEmail(String to, String subject, String content) throws Exception{
+        // Set up properties for the mail session
+		Properties properties = new Properties();
+    	properties.put("mail.smtp.host", "smtp.office365.com");
+    	properties.put("mail.smtp.port", "587");
+    	properties.put("mail.smtp.auth", "true");
+    	properties.put("mail.smtp.starttls.enable", "true");
+    	properties.put("mail.smtp.ssl.trust", "smtp.office365.com");
+//    	properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        // Create a mail session with authentication
+        Session session = Session.getInstance(properties,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication("sankeerthandvardhan@outlook.com", "OracleProject");
+                    }
+                });
+        try {
+            // Create a new MimeMessage object
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("sankeerthandvardhan@outlook.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+            message.setText(content);
+            // Send the message
+            Transport.send(message);
+            System.out.println("Email sent successfully.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
