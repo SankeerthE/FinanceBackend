@@ -36,7 +36,7 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 
 	@Override
 	public boolean addLoan(LoanApplication loanApplication) throws GenericException {
-		boolean status = true;
+		boolean status = false;
 
 		try {
 			ps = connection.prepareStatement(
@@ -50,8 +50,8 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 			ps.setDouble(6, loanApplication.getEmi());
 			ps.setString(7, loanApplication.getStatus());
 			int res = ps.executeUpdate();
+			status=true;
 			if (res == 0) {
-				status = false;
 				throw new GenericException("failed to add loan application");
 			}
 		} catch (SQLException e) {
@@ -67,7 +67,10 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 		try {
 			ps=connection.prepareStatement("delete from loanapplication where application_number=?");
 			ps.setString(1, applicationNumber);
+			System.out.println("ds");
 			int res = ps.executeUpdate();
+			System.out.println("dsdss");
+
 			if(res==0) {
 				status = false;
 				throw new GenericException("failed to delete loan application");
@@ -75,6 +78,8 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(),e);
 		}
+//		System.out.println("dsdss");
+
 		return status;
 	}
 

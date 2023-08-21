@@ -34,7 +34,7 @@ public class AuthenticationEndpoint {
 			String password = customerLoginDTO.getPassword();
 			// Authenticate the user using the credentials provided
             authenticate(username , password );
-            System.out.println(username);
+//            System.out.println(username);
 
             // Issue a token for the user
             String token = issueToken(username);

@@ -39,6 +39,9 @@ public class CustomerServiceImpl implements CustomerService {
 		} catch (Exception e) {
 			throw new GenericException(e.getMessage(), e);
 		}
+		if (account == null || customer == null) {
+			return null;
+		}
 
 		ProfileDTO profileDTO = new ProfileDTO(customer.getCustomerName(), customer.getCustomerGender(),
 				customer.getCustomerEmail(), customer.getCustomerMobile(), account.getAccountNumber(),
@@ -52,8 +55,8 @@ public class CustomerServiceImpl implements CustomerService {
 
 		Customer customer = new Customer(customerId, createCustDTO.getCustomerName(), createCustDTO.getCustomerGender(),
 				createCustDTO.getCustomerEmail(), createCustDTO.getCustomerMobile(), null);
-		Credentials credentials = new Credentials(createCustDTO.getUserName(),
-				createCustDTO.getPassword(), Role.CUSTOMER.name());
+		Credentials credentials = new Credentials(createCustDTO.getUserName(), createCustDTO.getPassword(),
+				Role.CUSTOMER.name());
 
 		// creating account for new user
 		String accountNumber = ServiceUtility.generateId("ACC");
@@ -64,10 +67,11 @@ public class CustomerServiceImpl implements CustomerService {
 		try {
 			boolean createCustomerstatus = customerDAOImpl.createCustomer(customer);
 			System.out.println(createCustomerstatus);
-			if(!createCustomerstatus) {
-				throw new GenericException("failed to create customer mail"+createCustDTO.getCustomerEmail()+"already exists");
+			if (!createCustomerstatus) {
+				throw new GenericException(
+						"failed to create customer mail" + createCustDTO.getCustomerEmail() + "already exists");
 			}
-			
+
 			addCredentialsStatus = credentialsDAOImpl.addCredentials(credentials);
 			System.out.println(addCredentialsStatus);
 
@@ -77,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
 			accountDAOImpl.createAccount(account);
 
 		} catch (GenericException e) {
-			
+
 			status = false;
 			throw e;
 		} catch (Exception e) {

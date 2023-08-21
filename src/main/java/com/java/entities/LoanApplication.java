@@ -74,5 +74,22 @@ public class LoanApplication {
 		this.timestamp = timestamp;
 	}
 	
+	@Override
+	public boolean equals(Object arg0) {
+		if (arg0 == null)
+			return false;
+
+		if (this == arg0)
+			return true;
+
+		if (!(arg0 instanceof LoanApplication))
+			return false;
+		LoanApplication other = (LoanApplication) arg0;
+		if (this.application_number != other.application_number	)
+			return false;
+
+		return true;
+	}
+	
 	
 }

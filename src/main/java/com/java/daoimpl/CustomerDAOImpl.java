@@ -19,7 +19,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	@Override
 	public boolean createCustomer(Customer customer) throws GenericException {
-		boolean status=false;
+		boolean status = false;
 		try {
 			ps = connection.prepareStatement(
 					"insert into customer(cust_id,cust_name,cust_gender,cust_email,cust_mobile,timestamp) values(?,?,?,?,?,CURRENT_TIMESTAMP)");
@@ -29,7 +29,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 			ps.setString(4, customer.getCustomerEmail());
 			ps.setString(5, customer.getCustomerMobile());
 			int res = ps.executeUpdate();
-			if(res==0) {
+			if (res == 0) {
 				throw new GenericException("failed to create customer");
 			}
 			status = true;
@@ -48,13 +48,13 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	@Override
 	public boolean deleteCustomer(String CustomerId) throws GenericException {
-		boolean status=true;
-		
+		boolean status = true;
+
 		try {
-			ps=connection.prepareStatement("delete from customer where cust_id=?");
+			ps = connection.prepareStatement("delete from customer where cust_id=?");
 			ps.setString(1, CustomerId);
-			int res=ps.executeUpdate();
-			if(res==0) {
+			int res = ps.executeUpdate();
+			if (res == 0) {
 				status = false;
 				throw new GenericException("failed to delete customerId");
 			}
@@ -75,7 +75,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 				customers.add(new Customer(res.getString(1), res.getString(2), res.getString(3), res.getString(4),
 						res.getString(5), res.getTimestamp(6)));
 			}
-			
+
 		} catch (SQLException e) {
 			throw new GenericException(e.getMessage(), e);
 		}
@@ -92,12 +92,12 @@ public class CustomerDAOImpl implements CustomerDAO {
 			ps.setString(1, CustomerId);
 			ResultSet res = ps.executeQuery();
 
-			if (res.getFetchSize() == 0) {
-				throw new GenericException("failed to get customer");
-			}
 			while (res.next()) {
 				customer = new Customer(res.getString(1), res.getString(2), res.getString(3), res.getString(4),
 						res.getString(5), res.getTimestamp(6));
+			}
+			if (customer==null) {
+				throw new GenericException("failed to get customer");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
