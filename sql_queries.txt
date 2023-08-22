@@ -1,0 +1,40 @@
+CREATE TABLE customer (cust_id varchar2(150), cust_name varchar2(150) NOT NULL, cust_gender varchar2(150) NOT NULL, cust_email varchar2(150) UNIQUE, cust_mobile varchar2(150) NOT NULL, timestamp TIMESTAMP not null, PRIMARY KEY(cust_id));
+select * from customer;
+drop table customer;
+insert into customer values('dfasa','fdsa','fda','mail','9090',CURRENT_TIMESTAMP);
+
+CREATE TABLE loan (loan_id varchar2(100), loan_type varchar2(100) NOT NULL, loan_rate number NOT NULL, PRIMARY KEY(loan_id));
+insert into loan values('loanid','loantype',7.7);
+drop table loan;
+select * from loan;
+
+    CREATE TABLE loanapplication(application_number varchar2(100), cust_id varchar2(150), loan_id varchar2(200) NOT NULL, amount number NOT NULL, tenure number NOT NULL, emi number NOT NULL, status varchar2(100) NOT NULL, timestamp TIMESTAMP not null,PRIMARY KEY(application_number), FOREIGN KEY (cust_id) REFERENCES customer(cust_id), FOREIGN KEY (loan_id) REFERENCES loan(loan_id));
+insert into loanapplication values('appnumber','dfasa','loanid', 55,55,55,'under progress', CURRENT_TIMESTAMP);
+drop table loanapplication;
+select * from loanapplication;
+
+CREATE TABLE document(document_id varchar2(150) NOT NULL, application_number varchar2(100), aadhar BLOB not null, pan BLOB not null, timestamp TIMESTAMP not null, PRIMARY KEY(document_id), FOREIGN KEY(application_number) REFERENCES loanapplication(application_number));
+insert into document values('doc_id','appnumber',hextoraw('483d7a34'),hextoraw('453d7a34'),CURRENT_TIMESTAMP);
+truncate table document;
+drop table document;
+select * from document;
+
+CREATE TABLE account(account_number varchar2(100) NOT NULL, cust_id varchar2(150), balance number, timestamp TIMESTAMP NOT NULL, FOREIGN KEY(cust_id) REFERENCES customer(cust_id));
+insert into account values('accunt', 'dfasa', 87, CURRENT_TIMESTAMP);
+drop table account;
+select * from account;
+
+CREATE TABLE customer_credentials(cust_id varchar2(150), username varchar2(150) UNIQUE, password varchar2(150) NOT NULL, FOREIGN KEY (cust_id) REFERENCES customer(cust_id));
+select * from customer_credentials;
+drop table customer_credentials;
+rollback;
+
+CREATE TABLE credentials(username varchar2(150), password varchar2(150) NOT NULL, role varchar2(150) NOT NULL, PRIMARY KEY (username));
+select * from credentials;
+insert into credentials values('shiva','prasad','MANAGER');
+insert into credentials values('mithun','begam','CLERK');
+drop table credentials;
+
+CREATE TABLE tokens(username varchar2(150) PRIMARY KEY, token varchar2(150), FOREIGN KEY(username) REFERENCES credentials(username));
+select * from tokens;
+truncate table tokens;
