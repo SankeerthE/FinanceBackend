@@ -128,6 +128,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
 			Account account = accountDAOImpl.getAccountById(approveDTO.getCustomerId());
 			account.setBalance(account.getBalance() + loanApplication.getAmount());
+			System.out.println(account.getBalance()+" "+account.getAccountNumber());
 			accountDAOImpl.updateAccount(account.getAccountNumber(), account);
 			// sending email
 //			sendEmail("sankeerthmeda@gmail.com", "hello", "body");
@@ -154,6 +155,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             //session.setDebug(true);
 
             Customer customer=customerDAOImpl.getCustomerById(approveDTO.getCustomerId());
+            System.out.println(customer.getCustomerEmail());
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
 //            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("sankeerthmeda@gmail.com"));

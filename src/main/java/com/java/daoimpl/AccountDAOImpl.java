@@ -71,6 +71,7 @@ public class AccountDAOImpl implements AccountDAO {
 	@Override
 	public Account getAccountById(String customerId) throws GenericException {
 		Account account = null;
+		System.out.println(customerId);
 		try {
 			ps = connection
 					.prepareStatement("select account_number,cust_id,balance,timestamp from account where cust_id=?");
@@ -79,6 +80,7 @@ public class AccountDAOImpl implements AccountDAO {
 			if (res.getFetchSize() == 0) {
 				throw new GenericException("there is no account present for "+customerId);
 			}
+			System.out.println(res.getFetchSize());
 			while (res.next()) {
 				account = new Account(res.getString(1), res.getString(2), res.getDouble(3), res.getTimestamp(4));
 			}
