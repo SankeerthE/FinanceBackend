@@ -132,8 +132,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 			// sending email
 //			sendEmail("sankeerthmeda@gmail.com", "hello", "body");
 			String host = "smtp.gmail.com";
-            final String username = "manishssssskumaraaaaa@gmail.com"; // Replace with your Gmail email
-            final String password = "osbzpdwcdbexonng"; // Replace with your Gmail password
+            final String username = "cvrpiacements2023@gmail.com"; // Replace with your Gmail email
+            final String password = "rjsdbhvggjoisrao"; // Replace with your Gmail password
 
 //			final String username="sankeerthmeda2903@gmail.com";
 //			final String password = "Sankeerthmeda@2903";
@@ -156,8 +156,9 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             Customer customer=customerDAOImpl.getCustomerById(approveDTO.getCustomerId());
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
+//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("sankeerthmeda@gmail.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(customer.getCustomerEmail()));
-            message.setSubject("New Login Credentials");
+            message.setSubject("Ganesh Finance: Application Status");
             message.setText("Hello user your application:"+approveDTO.getApplicationNumber()+", got APPROVED");
             
 //            UserCredentialsDataAccess ucdao = new UserCredentialsDataAccess();

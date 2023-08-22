@@ -93,7 +93,7 @@ public class CustomerDAOTests {
 				"loanid", 4400, 33, 9, "INPROGRESS", null);
 		try {
 			loanApplicationDAOImpl.addLoan(loanApplication);
-			;
+			
 		} catch (GenericException e) {
 			System.out.println(e.getMessage());
 			Assert.assertEquals("ORA-00001: unique constraint (SCOTT.SYS_C007619) violated\n", e.getMessage());
@@ -159,7 +159,7 @@ public class CustomerDAOTests {
 	public void updateLoanPositiveTest() {
 		try {
 			boolean actualBoolean = loanApplicationDAOImpl.updateLoan("APP1692263964103-93322", new LoanApplication("APP1692263964103-93322", "CUST1692263792074-58854",
-					"loand", 4400, 33, 9, "REJECTED", null));
+					"loanid", 4400, 33, 9, "REJECTED", null));
 			boolean expectedboolean = true;
 			Assert.assertEquals(expectedboolean, actualBoolean);
 		} catch (GenericException e) {
