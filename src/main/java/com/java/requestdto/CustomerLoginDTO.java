@@ -3,6 +3,15 @@ package com.java.requestdto;
 public class CustomerLoginDTO {
 	private String username;
 	private String password;
+	private String userRole;
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
 
 	public String getUsername() {
 		return username;

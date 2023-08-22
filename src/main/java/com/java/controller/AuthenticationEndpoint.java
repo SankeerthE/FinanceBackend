@@ -34,7 +34,12 @@ public class AuthenticationEndpoint {
 			String password = customerLoginDTO.getPassword();
 			// Authenticate the user using the credentials provided
             authenticate(username , password );
-//            System.out.println(username);
+            String actualRole = getRole(username,password);
+            String expectedRole = customerLoginDTO.getUserRole();
+//            System.out.println(actualRole+" "+expectedRole);
+            if(!actualRole.equals(expectedRole)) {
+            	throw new Exception(expectedRole+" is unauthorized to LOGIN");
+            }
 
             // Issue a token for the user
             String token = issueToken(username);
@@ -42,14 +47,37 @@ public class AuthenticationEndpoint {
             // Return the token on the response
             String id=getId(username);
         	
-            return Response.ok(token+":"+id).build();
+            return Response.ok(token+":"+id+":"+actualRole).build();
 
         } catch (Exception e) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }      
     }
     
-    private String getId(String username) throws Exception{
+    private String getRole(String username, String password) throws Exception {
+    	String role = null;
+    	
+    	JdbcApp jdbc = new JdbcApp();
+    	Connection connection = jdbc.getConnection();
+    	PreparedStatement ps = jdbc.getPs();
+    	
+    	ps = connection.prepareStatement("select role from credentials where username=? and password=?");
+    	ps.setString(1, username);
+    	ps.setString(2, password);
+    	
+		ResultSet res = ps.executeQuery();
+		boolean status=false;
+		while(res.next()) {
+			role = res.getString(1);
+			status=true;
+		}
+		if(!status) {
+			throw new Exception("invalid credentials");
+		}
+		return role;
+	}
+
+	private String getId(String username) throws Exception{
     	
     	JdbcApp jdbc = new JdbcApp();
     	Connection connection = jdbc.getConnection();

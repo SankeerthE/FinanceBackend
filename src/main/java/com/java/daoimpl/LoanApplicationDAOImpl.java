@@ -91,7 +91,9 @@ public class LoanApplicationDAOImpl implements LoanApplicationDAO {
 			ps.setString(1, loanApplication.getStatus());
 			ps.setString(2, applicationNumber);
 			int res = ps.executeUpdate();
+			System.out.println(res);
 			if (res == 0) {
+				System.out.println("entered");
 				status = false;
 				throw new GenericException("failed to update loan");
 			}
