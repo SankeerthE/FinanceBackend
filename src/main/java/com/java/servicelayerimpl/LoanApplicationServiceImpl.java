@@ -14,9 +14,11 @@ import javax.mail.MessagingException;
 
 import com.java.Exceptions.GenericException;
 import com.java.daoimpl.AccountDAOImpl;
+import com.java.daoimpl.CustomerDAOImpl;
 import com.java.daoimpl.DocumentDAOImpl;
 import com.java.daoimpl.LoanApplicationDAOImpl;
 import com.java.entities.Account;
+import com.java.entities.Customer;
 import com.java.entities.DocumentStr;
 import com.java.entities.LoanApplication;
 import com.java.requestdto.ApproveDTO;
@@ -30,6 +32,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	LoanApplicationDAOImpl loanApplicationDAOImpl = new LoanApplicationDAOImpl();
 	DocumentDAOImpl documentDAOImpl = new DocumentDAOImpl();
 	AccountDAOImpl accountDAOImpl = new AccountDAOImpl();
+	CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
 
 	@Override
 	public ArrayList<LoanApplication> getAllApplications() throws GenericException {
@@ -150,9 +153,10 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             
             //session.setDebug(true);
 
+            Customer customer=customerDAOImpl.getCustomerById(approveDTO.getCustomerId());
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("sankeerthmeda@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(customer.getCustomerEmail()));
             message.setSubject("New Login Credentials");
             message.setText("Hello user your application:"+approveDTO.getApplicationNumber()+", got APPROVED");
             
