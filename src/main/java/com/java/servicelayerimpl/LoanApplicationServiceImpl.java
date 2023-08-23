@@ -65,7 +65,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 			status = false;
 			throw e;
 		} catch (Exception e) {
-			status=false;
+			status = false;
 			throw new GenericException(e.getMessage(), e);
 		}
 
@@ -128,45 +128,44 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
 			Account account = accountDAOImpl.getAccountById(approveDTO.getCustomerId());
 			account.setBalance(account.getBalance() + loanApplication.getAmount());
-			System.out.println(account.getBalance()+" "+account.getAccountNumber());
+			System.out.println(account.getBalance() + " " + account.getAccountNumber());
 			accountDAOImpl.updateAccount(account.getAccountNumber(), account);
 			// sending email
 //			sendEmail("sankeerthmeda@gmail.com", "hello", "body");
 			String host = "smtp.gmail.com";
-            final String username = "cvrpiacements2023@gmail.com"; // Replace with your Gmail email
-            final String password = "rjsdbhvggjoisrao"; // Replace with your Gmail password
+			final String username = "cvrpiacements2023@gmail.com"; // Replace with your Gmail email
+			final String password = "rjsdbhvggjoisrao"; // Replace with your Gmail password
 
 //			final String username="sankeerthmeda2903@gmail.com";
 //			final String password = "Sankeerthmeda@2903";
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.host", host);
-            props.put("mail.smtp.socketFactory.port", "465"); //SSL Port
-    		props.put("mail.smtp.socketFactory.class",
-    				"javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
-    		props.put("mail.smtp.auth", "true"); //Enabling SMTP Authentication
-    		props.put("mail.smtp.port", "465"); //SMTP Port
-            Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(username, password);
-                }
-            });
-            
-            //session.setDebug(true);
+			Properties props = new Properties();
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.host", host);
+			props.put("mail.smtp.socketFactory.port", "465"); // SSL Port
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL Factory Class
+			props.put("mail.smtp.auth", "true"); // Enabling SMTP Authentication
+			props.put("mail.smtp.port", "465"); // SMTP Port
+			Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password);
+				}
+			});
 
-            Customer customer=customerDAOImpl.getCustomerById(approveDTO.getCustomerId());
-            System.out.println(customer.getCustomerEmail());
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
+			// session.setDebug(true);
+
+			Customer customer = customerDAOImpl.getCustomerById(approveDTO.getCustomerId());
+			System.out.println(customer.getCustomerEmail());
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(username));
 //            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("sankeerthmeda@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(customer.getCustomerEmail()));
-            message.setSubject("Ganesh Finance: Application Status");
-            message.setText("Hello user your application:"+approveDTO.getApplicationNumber()+", got APPROVED");
-            
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(customer.getCustomerEmail()));
+			message.setSubject("Ganesh Finance: Application Status");
+			message.setText("Hello user your application:" + approveDTO.getApplicationNumber() + ", got APPROVED");
+
 //            UserCredentialsDataAccess ucdao = new UserCredentialsDataAccess();
 //			Boolean flag = ucdao.update(userCredentials.getUsername(), userCredentials.getPassword(), loginpassword, 0);
 			Transport.send(message);
-            System.out.println("Email sent successfully.");
+			System.out.println("Email sent successfully.");
 		} catch (GenericException e) {
 			status = false;
 			throw e;
@@ -212,17 +211,17 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
 	@Override
 	public boolean tickleEmi() throws GenericException {
-		boolean status=false;
+		boolean status = false;
 
 		ArrayList<LoanApplication> loanApplications;
 		try {
 			loanApplications = loanApplicationDAOImpl.getLoanApplicationByStatus(Status.APPROVED.name());
 			for (LoanApplication loanApplication : loanApplications) {
-				status=false;
+				status = false;
 				Account account = accountDAOImpl.getAccountById(loanApplication.getCust_id());
 				account.setBalance(account.getBalance() - loanApplication.getEmi());
 				accountDAOImpl.updateAccount(account.getAccountNumber(), account);
-				status=true;
+				status = true;
 			}
 		} catch (GenericException e) {
 			throw e;
@@ -231,36 +230,5 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 		}
 		return status;
 	}
-	
-	public void sendEmail(String to, String subject, String content) throws Exception{
-        // Set up properties for the mail session
-		Properties properties = new Properties();
-    	properties.put("mail.smtp.host", "smtp.office365.com");
-    	properties.put("mail.smtp.port", "587");
-    	properties.put("mail.smtp.auth", "true");
-    	properties.put("mail.smtp.starttls.enable", "true");
-    	properties.put("mail.smtp.ssl.trust", "smtp.office365.com");
-//    	properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
-        // Create a mail session with authentication
-        Session session = Session.getInstance(properties,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("sankeerthandvardhan@outlook.com", "OracleProject");
-                    }
-                });
-        try {
-            // Create a new MimeMessage object
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("sankeerthandvardhan@outlook.com"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            message.setSubject(subject);
-            message.setText(content);
-            // Send the message
-            Transport.send(message);
-            System.out.println("Email sent successfully.");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
 
 }
